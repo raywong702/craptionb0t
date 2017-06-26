@@ -29,6 +29,7 @@ class bot(object):
         print(divider)
         for i, k in enumerate(gen):
             if any(ext in k for ext in self.extensions):
+                # if imgflip
                 text = self.itt.processImage(self.itt.getImage(k), self.lang,
                                              self.tessDir)
                 text = text.replace('\r', '').replace('\n', '')
