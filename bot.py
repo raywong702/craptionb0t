@@ -38,17 +38,21 @@ class bot(object):
                 print('')
                 print(divider)
             else:
+                print(f'{i:02}')
+                print(f'{k}')
                 if 'imgflip' in k:
-                    print(f'{i:02}')
-                    print(f'{k}')
                     print(self.gi.getImgFlip(k)[1].strip())
-                    print('')
-                    print(divider)
+                elif 'imgur' in k:
+                    img = self.gi.getImgur(k)
+                    text = self.itt.processImage(self.itt.getImage(img),
+                                                 self.lang, self.tessDir)
+                    text = text.replace('\r', '').replace('\n', '')
+                    print(f'{img}')
+                    print(f'{text}')
                 else:
-                    print(f'{i:02}')
-                    print(f'{k}')
-                    print('')
-                    print(divider)
+                    print('*' * 10)
+                print('')
+                print(divider)
 
 
 if __name__ == '__main__':
