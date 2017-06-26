@@ -4,12 +4,14 @@ import requests
 from bs4 import BeautifulSoup
 from redditParser import redditParser
 from imageToText import imageToText
+from getImage import getImage
 
 
 class bot(object):
     def __init__(self, lang, tessDir):
         self.rp = redditParser()
         self.itt = imageToText()
+        self.gi = getImage()
         self.lang = lang
         self.tessDir = tessDir
         self.extensions = ('.jpg',
@@ -36,10 +38,17 @@ class bot(object):
                 print('')
                 print(divider)
             else:
-                print(f'{i:02}')
-                print(f'{k}')
-                print('')
-                print(divider)
+                if 'imgflip' in k:
+                    print(f'{i:02}')
+                    print(f'{k}')
+                    print(self.gi.getImgFlip(k)[1].strip())
+                    print('')
+                    print(divider)
+                else:
+                    print(f'{i:02}')
+                    print(f'{k}')
+                    print('')
+                    print(divider)
 
 
 if __name__ == '__main__':
