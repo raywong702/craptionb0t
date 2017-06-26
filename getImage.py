@@ -8,6 +8,8 @@ class getImage(object):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         img = soup.find('img', {'id': 'im'})
+        # index 0 is meme
+        # index 1 is text
         return img.attrs['alt'].split('|')
 
     def getImgur(self, url):
