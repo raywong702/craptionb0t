@@ -18,6 +18,14 @@ class bot(object):
                            '.png'
                            )
 
+    def textStrip(self, text):
+        return text.replace('\r', '').replace('\n', '')
+
+    def processImage(self, img):
+        text = self.itt.processImage(self.itt.getImage(img), self.lang,
+                                     self.tessDir)
+        return self.textStrip(text)
+
     def getMemeText(self, imageUrl):
             # special case for imgflip. get text from alt attr of image
             if 'imgflip' in imageUrl:
@@ -25,16 +33,12 @@ class bot(object):
                 return self.gi.getImgFlip(imgflipUrl)[1].strip()
             # direct image urls that are not imgflip. run ocr
             elif any(ext in imageUrl for ext in self.extensions):
-                text = self.itt.processImage(self.itt.getImage(imageUrl),
-                                             self.lang, self.tessDir)
-                return text.replace('\r', '').replace('\n', '')
+                return self.processImage(imageUrl)
             # website urls. get direct image and run ocr
             else:
                 if 'imgur' in imageUrl:
                     img = self.gi.getImgur(imageUrl)
-                    text = self.itt.processImage(self.itt.getImage(img),
-                                                 self.lang, self.tessDir)
-                    return text.replace('\r', '').replace('\n', '')
+                    return self.processImage(img)
                 else:
                     return '*' * 10
 
