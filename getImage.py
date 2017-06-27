@@ -4,6 +4,19 @@ from bs4 import BeautifulSoup
 
 
 class getImage(object):
+    def imgflipDirectUrl(self, imgflipUrl):
+        if 'i.imgflip' in imgflipUrl:
+            return True
+        return False
+
+    def imgflipUrlTransform(self, imgflipUrl):
+        if self.imgflipDirectUrl(imgflipUrl):
+            prefix = imgflipUrl[:imgflipUrl.index('i')]
+            suffix = imgflipUrl[imgflipUrl.rindex('/'):imgflipUrl.rindex('.')]
+            return prefix + 'imgflip.com/i' + suffix
+        else:
+            return imgflipUrl
+
     def getImgFlip(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')

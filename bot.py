@@ -18,48 +18,48 @@ class bot(object):
                            '.png'
                            )
 
-    def getMemeText(self, url, user, key):
-        _json = self.rp.getRedditJson(url, user)
+    def getMemeText(self, imageUrl):
+            # special case for imgflip. get text from alt attr of image
+            if 'imgflip' in imageUrl:
+                imgflipUrl = self.gi.imgflipUrlTransform(imageUrl)
+                return self.gi.getImgFlip(imgflipUrl)[1].strip()
+            # direct image urls that are not imgflip. run ocr
+            elif any(ext in imageUrl for ext in self.extensions):
+                text = self.itt.processImage(self.itt.getImage(imageUrl),
+                                             self.lang, self.tessDir)
+                return text.replace('\r', '').replace('\n', '')
+            # website urls. get direct image and run ocr
+            else:
+                if 'imgur' in imageUrl:
+                    img = self.gi.getImgur(imageUrl)
+                    text = self.itt.processImage(self.itt.getImage(img),
+                                                 self.lang, self.tessDir)
+                    return text.replace('\r', '').replace('\n', '')
+                else:
+                    return '*' * 10
+
+    def getMemeTextAll(self, subredditUrl, user, key):
+        _json = self.rp.getRedditJson(subredditUrl, user)
         while 'data' not in _json:
             time.sleep(4)
-            _json = redditParser.getRedditJson(url, user)
+            _json = redditParser.getRedditJson(subredditUrl, user)
 
         gen = self.rp.getParsedRedditJson(_json, key)
         divider = '-' * 50
         print(divider)
-        for i, k in enumerate(gen):
-            if any(ext in k for ext in self.extensions):
-                # if imgflip
-                text = self.itt.processImage(self.itt.getImage(k), self.lang,
-                                             self.tessDir)
-                text = text.replace('\r', '').replace('\n', '')
-                print(f'{i:02}')
-                print(f'{k}')
-                print(f'{text}')
-                print('')
-                print(divider)
-            else:
-                print(f'{i:02}')
-                print(f'{k}')
-                if 'imgflip' in k:
-                    print(self.gi.getImgFlip(k)[1].strip())
-                elif 'imgur' in k:
-                    img = self.gi.getImgur(k)
-                    text = self.itt.processImage(self.itt.getImage(img),
-                                                 self.lang, self.tessDir)
-                    text = text.replace('\r', '').replace('\n', '')
-                    print(f'{img}')
-                    print(f'{text}')
-                else:
-                    print('*' * 10)
-                print('')
-                print(divider)
+        for i, urlKey in enumerate(gen):
+            print(f'{i:02}')
+            print(f'{urlKey}')
+            print(self.getMemeText(urlKey))
+            print('')
+            print(divider)
 
 
 if __name__ == '__main__':
     import os
 
-    url = 'https://www.reddit.com/r/AdviceAnimals/top/.json?sort=top&t=week'
+    subredditUrl = 'https://www.reddit.com/r/AdviceAnimals/top/'
+    subredditUrl += '.json?sort=top&t=week'
     user = 'craptionb0t'
     key = 'url'
 
@@ -68,4 +68,4 @@ if __name__ == '__main__':
     tessDir += 'tessdata'
 
     b = bot(lang, tessDir)
-    b.getMemeText(url, user, key)
+    b.getMemeTextAll(subredditUrl, user, key)
