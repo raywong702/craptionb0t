@@ -31,6 +31,7 @@ class bot(object):
             if 'imgflip' in imageUrl:
                 imgflipUrl = self.gi.imgflipUrlTransform(imageUrl)
                 return self.gi.getImgFlip(imgflipUrl)[1].strip()
+            # makeameme
             # direct image urls that are not imgflip. run ocr
             elif any(ext in imageUrl for ext in self.extensions):
                 return self.processImage(imageUrl)
