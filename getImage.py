@@ -9,7 +9,7 @@ class getImage(object):
         self.EXTENSIONS = imageExtensions().EXTENSIONS
 
     ########################################
-    #### imgflip
+    # imgflip
     def imgFlipDirectUrl(self, url):
         if 'i.imgflip' in url:
             return True
@@ -32,7 +32,7 @@ class getImage(object):
         return img.attrs['alt'].split('|')
 
     ########################################
-    #### makeameme
+    # makeameme
     def makeAMemeDirectUrl(self, url):
         if 'media.makeameme' in url:
             return True
@@ -59,7 +59,7 @@ class getImage(object):
         return meme
 
     ########################################
-    #### livememe
+    # livememe
     def liveMemeDirectUrl(self, url):
         if 'lvme.me' in url or any(ext in url for ext in self.EXTENSIONS):
             return True
@@ -90,7 +90,7 @@ class getImage(object):
         return (memeType, text)
 
     ########################################
-    #### memecaptain
+    # memecaptain
     def getMemeCaptain(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
@@ -98,7 +98,7 @@ class getImage(object):
         return img
 
     ########################################
-    #### memegen
+    # memegen
     def getMemeGen(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
@@ -106,13 +106,12 @@ class getImage(object):
         return img
 
     ########################################
-    #### imgur
+    # imgur
     def getImgur(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         img = soup.find('link', {'rel': 'image_src'}).attrs['href']
         return img
-
 
     # makeameme.org
     # media.makeameme.org
