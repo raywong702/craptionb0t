@@ -77,10 +77,16 @@ class getImage(object):
         soup = BeautifulSoup(page, 'lxml')
         style1 = 'word-wrap: break-word; font-weight: bold;'
         style2 = 'word-wrap: break-word; margin-top: 11px;'
-        memeType = None
-        ### TODO check if style1 exists and append all for style2
-        # memeType = soup.findAll('div', {'style': style1})[0].text
-        text = soup.findAll('div', {'style': style2})[0].text.upper()
+        memeType = ''
+        memeText = ''
+        text = []
+        try:
+            memeType = soup.findAll('div', {'style': style1})[0].text
+        except IndexError:
+            memeType = None
+        memeText = soup.findAll('div', {'style': style2})
+        for i in memeText:
+            text.append(i.text.upper().strip())
         return (memeType, text)
 
     ########################################

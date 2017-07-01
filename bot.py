@@ -43,8 +43,13 @@ class bot(object):
             elif 'livememe' in imageUrl or 'lvme.me' in imageUrl:
                 liveMemeUrl = self.gi.liveMemeTransform(imageUrl)
                 memeList = self.gi.getLiveMeme(liveMemeUrl)
-                memeType = memeList[0].strip()
-                text = memeList[1].strip()
+                memeType = memeList[0]
+                if type(memeType) is str:
+                    memeType = memeType.strip()
+                memeText = memeList[1]
+                text = ''
+                for i in memeText:
+                    text += i.strip() + '\n'
                 return text
             elif 'i.memecaptain' in imageUrl:
                 pass
@@ -87,7 +92,7 @@ if __name__ == '__main__':
 
     subredditUrl = 'https://www.reddit.com/r/AdviceAnimals/top/'
     subredditUrl += '.json?sort=top&t=week'
-    subredditUrl = 'https://www.reddit.com/domain/livememe.com/.json'
+    # subredditUrl = 'https://www.reddit.com/domain/livememe.com/.json'
     user = 'craptionb0t'
     key = 'url'
 
