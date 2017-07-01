@@ -4,5 +4,6 @@
 class imageExtensions(object):
     def __init__(self):
         self.EXTENSIONS = ('.jpg',
-                           '.png'
+                           '.png',
+                           '.gif'
                            )
