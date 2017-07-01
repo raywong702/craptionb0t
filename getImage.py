@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 import requests
 from bs4 import BeautifulSoup
+from imageExtensions import imageExtensions
 
 
 class getImage(object):
+    def __init__(self):
+        self.EXTENSIONS = imageExtensions().EXTENSIONS
+
     ########################################
     #### imgflip
     def imgFlipDirectUrl(self, url):
@@ -26,14 +30,6 @@ class getImage(object):
         # index 0 is meme
         # index 1 is text
         return img.attrs['alt'].split('|')
-
-    ########################################
-    #### imgur
-    def getImgur(self, url):
-        page = requests.get(url).text
-        soup = BeautifulSoup(page, 'lxml')
-        img = soup.find('link', {'rel': 'image_src'}).attrs['href']
-        return img
 
     ########################################
     #### makeameme
@@ -64,11 +60,28 @@ class getImage(object):
 
     ########################################
     #### livememe
+    def liveMemeDirectUrl(self, url):
+        if 'lvme.me' in url or any(ext in url for ext in self.EXTENSIONS):
+            return True
+        return False
+
+    def liveMemeTransform(self, url):
+        if self.liveMemeDirectUrl(url):
+            suffix = url[url.rindex('/'):url.rindex('.')]
+            return 'http://www.livememe.com' + suffix
+        else:
+            return url
+
     def getLiveMeme(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
-        img = None
-        return img
+        style1 = 'word-wrap: break-word; font-weight: bold;'
+        style2 = 'word-wrap: break-word; margin-top: 11px;'
+        memeType = None
+        ### TODO check if style1 exists and append all for style2
+        # memeType = soup.findAll('div', {'style': style1})[0].text
+        text = soup.findAll('div', {'style': style2})[0].text.upper()
+        return (memeType, text)
 
     ########################################
     #### memecaptain
@@ -86,6 +99,14 @@ class getImage(object):
         img = None
         return img
 
+    ########################################
+    #### imgur
+    def getImgur(self, url):
+        page = requests.get(url).text
+        soup = BeautifulSoup(page, 'lxml')
+        img = soup.find('link', {'rel': 'image_src'}).attrs['href']
+        return img
+
 
     # makeameme.org
     # media.makeameme.org
@@ -100,6 +121,11 @@ if __name__ == '__main__':
     gi = getImage()
     # url = 'https://imgflip.com/i/1r4za5'
     # print(gi.getImgFlip(url))
-    url = 'https://media.makeameme.org/created/you-know-what-594eef.jpg'
-    url = gi.makeAMemeTransform(url)
-    print(gi.getMakeAMeme(url))
+    # url = 'https://media.makeameme.org/created/you-know-what-594eef.jpg'
+    # url = gi.makeAMemeTransform(url)
+    # print(gi.getMakeAMeme(url))
+    # url = 'http://e.lvme.me/kh3mgv5.jpg'
+    url = 'http://www.livememe.com/g6m9iap'
+    url = gi.liveMemeTransform(url)
+    print(url)
+    print(gi.getLiveMeme(url))

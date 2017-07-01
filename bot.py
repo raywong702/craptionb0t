@@ -2,6 +2,7 @@
 import time
 import requests
 from bs4 import BeautifulSoup
+from imageExtensions import imageExtensions
 from redditParser import redditParser
 from imageToText import imageToText
 from getImage import getImage
@@ -14,9 +15,7 @@ class bot(object):
         self.gi = getImage()
         self.lang = lang
         self.tessDir = tessDir
-        self.extensions = ('.jpg',
-                           '.png'
-                           )
+        self.EXTENSIONS = imageExtensions().EXTENSIONS
 
     def textStrip(self, text):
         return text.replace('\r', '').replace('\n', '')
@@ -30,13 +29,23 @@ class bot(object):
             # special case for imgflip. get text from alt attr of image
             if 'imgflip' in imageUrl:
                 imgFlipUrl = self.gi.imgFlipUrlTransform(imageUrl)
-                return self.gi.getImgFlip(imgFlipUrl)[1].strip()
+                memeList = self.gi.getImgFlip(imgFlipUrl)
+                memeType = memeList[0].strip()
+                text = memeList[1].strip()
+                return text
             # special case for makeameme. get text from body
             elif 'makeameme' in imageUrl:
                 makeAMemeUrl = self.gi.makeAMemeTransform(imageUrl)
-                return self.gi.getMakeAMeme(makeAMemeUrl)[1].strip()
-            elif 'livememe' in imageUrl:
-                pass
+                memeList = self.gi.getMakeAMeme(makeAMemeUrl)
+                memeType = memeList[0].strip()
+                text = memeList[1].strip()
+                return text
+            elif 'livememe' in imageUrl or 'lvme.me' in imageUrl:
+                liveMemeUrl = self.gi.liveMemeTransform(imageUrl)
+                memeList = self.gi.getLiveMeme(liveMemeUrl)
+                memeType = memeList[0].strip()
+                text = memeList[1].strip()
+                return text
             elif 'i.memecaptain' in imageUrl:
                 pass
             elif 'memecaptain' in imageUrl:
@@ -45,14 +54,14 @@ class bot(object):
                 pass
             elif 'memegen' in imageUrl:
                 pass
-            # imgur webpage. get direct image and process
+            # imgur webpage. get direct image and run ocr
             elif '//imgur' in imageUrl:
                 img = self.gi.getImgur(imageUrl)
                 return self.processImage(img)
-            # direct image urls
-            elif any(ext in imageUrl for ext in self.extensions):
+            # direct image urls. primarily imgur and i.redd.it
+            elif any(ext in imageUrl for ext in self.EXTENSIONS):
                 return self.processImage(imageUrl)
-            # website urls. get direct image and run ocr
+            # website urls. need to get text if exists or img to run ocr on
             else:
                 return '*' * 10
 
@@ -78,6 +87,7 @@ if __name__ == '__main__':
 
     subredditUrl = 'https://www.reddit.com/r/AdviceAnimals/top/'
     subredditUrl += '.json?sort=top&t=week'
+    subredditUrl = 'https://www.reddit.com/domain/livememe.com/.json'
     user = 'craptionb0t'
     key = 'url'
 
