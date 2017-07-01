@@ -29,19 +29,32 @@ class bot(object):
     def getMemeText(self, imageUrl):
             # special case for imgflip. get text from alt attr of image
             if 'imgflip' in imageUrl:
-                imgflipUrl = self.gi.imgflipUrlTransform(imageUrl)
-                return self.gi.getImgFlip(imgflipUrl)[1].strip()
-            # makeameme
-            # direct image urls that are not imgflip. run ocr
+                imgFlipUrl = self.gi.imgFlipUrlTransform(imageUrl)
+                return self.gi.getImgFlip(imgFlipUrl)[1].strip()
+            # special case for makeameme. get text from body
+            elif 'makeameme' in imageUrl:
+                makeAMemeUrl = self.gi.makeAMemeTransform(imageUrl)
+                return self.gi.getMakeAMeme(makeAMemeUrl)[1].strip()
+            elif 'livememe' in imageUrl:
+                pass
+            elif 'i.memecaptain' in imageUrl:
+                pass
+            elif 'memecaptain' in imageUrl:
+                pass
+            elif 'm.memegen' in imageUrl:
+                pass
+            elif 'memegen' in imageUrl:
+                pass
+            # imgur webpage. get direct image and process
+            elif '//imgur' in imageUrl:
+                img = self.gi.getImgur(imageUrl)
+                return self.processImage(img)
+            # direct image urls
             elif any(ext in imageUrl for ext in self.extensions):
                 return self.processImage(imageUrl)
             # website urls. get direct image and run ocr
             else:
-                if 'imgur' in imageUrl:
-                    img = self.gi.getImgur(imageUrl)
-                    return self.processImage(img)
-                else:
-                    return '*' * 10
+                return '*' * 10
 
     def getMemeTextAll(self, subredditUrl, user, key):
         _json = self.rp.getRedditJson(subredditUrl, user)
