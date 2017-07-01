@@ -29,7 +29,8 @@ class getImage(object):
         img = soup.find('img', {'id': 'im'})
         # index 0 is meme
         # index 1 is text
-        return img.attrs['alt'].split('|')
+        meme = img.attrs['alt'].split('|')
+        return (meme[0].strip(), meme[1].strip())
 
     ########################################
     # makeameme
@@ -53,7 +54,7 @@ class getImage(object):
         meme = []
         for text in div[len(div)-1].text.split('\n'):
             if len(text) > 0 and 'add your own captions' not in text:
-                meme.append(text)
+                meme.append(text.strip())
         # index 0 is meme
         # index 1 is text
         return meme
@@ -77,16 +78,16 @@ class getImage(object):
         soup = BeautifulSoup(page, 'lxml')
         style1 = 'word-wrap: break-word; font-weight: bold;'
         style2 = 'word-wrap: break-word; margin-top: 11px;'
-        memeType = ''
-        memeText = ''
         text = []
         try:
-            memeType = soup.findAll('div', {'style': style1})[0].text
+            memeType = soup.findAll('div', {'style': style1})[0].text.strip()
         except IndexError:
             memeType = None
         memeText = soup.findAll('div', {'style': style2})
         for i in memeText:
             text.append(i.text.upper().strip())
+        # index 0 is meme
+        # index 1 is text
         return (memeType, text)
 
     ########################################
@@ -129,8 +130,8 @@ if __name__ == '__main__':
     # url = 'https://media.makeameme.org/created/you-know-what-594eef.jpg'
     # url = gi.makeAMemeTransform(url)
     # print(gi.getMakeAMeme(url))
-    # url = 'http://e.lvme.me/kh3mgv5.jpg'
-    url = 'http://www.livememe.com/g6m9iap'
+    url = 'http://e.lvme.me/kh3mgv5.jpg'
+    # url = 'http://www.livememe.com/g6m9iap'
     url = gi.liveMemeTransform(url)
     print(url)
     print(gi.getLiveMeme(url))

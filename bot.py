@@ -30,22 +30,20 @@ class bot(object):
             if 'imgflip' in imageUrl:
                 imgFlipUrl = self.gi.imgFlipUrlTransform(imageUrl)
                 memeList = self.gi.getImgFlip(imgFlipUrl)
-                memeType = memeList[0].strip()
-                text = memeList[1].strip()
+                memeType = memeList[0]
+                text = memeList[1]
                 return text
             # special case for makeameme. get text from body
             elif 'makeameme' in imageUrl:
                 makeAMemeUrl = self.gi.makeAMemeTransform(imageUrl)
                 memeList = self.gi.getMakeAMeme(makeAMemeUrl)
-                memeType = memeList[0].strip()
-                text = memeList[1].strip()
+                memeType = memeList[0]
+                text = memeList[1]
                 return text
             elif 'livememe' in imageUrl or 'lvme.me' in imageUrl:
                 liveMemeUrl = self.gi.liveMemeTransform(imageUrl)
                 memeList = self.gi.getLiveMeme(liveMemeUrl)
                 memeType = memeList[0]
-                if type(memeType) is str:
-                    memeType = memeType.strip()
                 memeText = memeList[1]
                 text = ''
                 for i in memeText:
