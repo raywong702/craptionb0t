@@ -92,6 +92,7 @@ def main(url, user, key, outFile, jsonFile=None):
 
 if __name__ == '__main__':
     url = 'https://www.reddit.com/r/AdviceAnimals/top/.json?sort=top&t=week'
+    # url = 'https://www.reddit.com/r/AdviceAnimals/comments/6k5onz/think_of_the_children_you_savage/.json'
     user = 'craptionb0t'
     jsonFile = 'reddit.json'
     outFile = 'thumbnails.txt'
