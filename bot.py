@@ -49,14 +49,23 @@ class bot(object):
                 for i in memeText:
                     text += i.strip() + '\n'
                 return text
-            elif 'i.memecaptain' in imageUrl:
-                pass
             elif 'memecaptain' in imageUrl:
-                pass
-            elif 'm.memegen' in imageUrl:
-                pass
+                memeCaptainUrl = self.gi.memeCaptainTransform(imageUrl)
+                memeList = self.gi.getMemeCaptain(memeCaptainUrl)
+                memeType = memeList[0]
+                memeText = memeList[1]
+                text = ''
+                for i in memeText:
+                    text += i.strip() + '\n'
+                return text
             elif 'memegen' in imageUrl:
-                pass
+                memeGenUrl = self.gi.memeGenTransform(imageUrl)
+                memeList = self.gi.getMemeGen(memeGenUrl)
+                memeType = memeList[0]
+                text = memeList[1]
+                if text == None and self.gi.memeGenDirectUrl(imageUrl):
+                    text = self.processImage(imageUrl)
+                return text
             # imgur webpage. get direct image and run ocr
             elif '//imgur' in imageUrl:
                 img = self.gi.getImgur(imageUrl)
@@ -90,7 +99,7 @@ if __name__ == '__main__':
 
     subredditUrl = 'https://www.reddit.com/r/AdviceAnimals/top/'
     subredditUrl += '.json?sort=top&t=week'
-    # subredditUrl = 'https://www.reddit.com/domain/livememe.com/.json'
+    # subredditUrl = 'https://www.reddit.com/domain/memegen.com/.json'
     user = 'craptionb0t'
     key = 'url'
 
