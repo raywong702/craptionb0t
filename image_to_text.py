@@ -105,7 +105,7 @@ class ImageToText(object):
         bottom_center = image.crop((bottom_quarter_lx, bottom_quarter_y,
                                    bottom_quarter_rx, height))
         bottom_bottom_pixel = (bottom_quarter_y +
-                             self.get_bottom_of_text(bottom_center))
+                               self.get_bottom_of_text(bottom_center))
 
         bottom_left = image.crop((0, bottom_quarter_y, middle_of_width,
                                  bottom_bottom_pixel))
@@ -115,15 +115,16 @@ class ImageToText(object):
         top_left_pixel = self.get_left_of_text(top_left)
         top_right_pixel = middle_of_width + self.get_right_of_text(top_right)
         top_top_pixel = min(self.get_top_of_text(top_left),
-                          self.get_top_of_text(top_right))
+                            self.get_top_of_text(top_right))
         top_bottom_pixel = max(self.get_bottom_of_text(top_left),
-                             self.get_bottom_of_text(top_right))
+                               self.get_bottom_of_text(top_right))
 
         bottom_left_pixel = self.get_left_of_text(bottom_left)
-        bottom_right_pixel = middle_of_width + self.get_right_of_text(bottom_right)
+        bottom_right_pixel = (middle_of_width +
+                              self.get_right_of_text(bottom_right))
         bottom_top_pixel = (bottom_quarter_y +
-                          min(self.get_top_of_text(bottom_left),
-                              self.get_top_of_text(bottom_right)))
+                            min(self.get_top_of_text(bottom_left),
+                                self.get_top_of_text(bottom_right)))
 
         padding = 10
         if top_left_pixel - padding > 0:
@@ -145,9 +146,17 @@ class ImageToText(object):
         if bottom_bottom_pixel + padding < height:
             bottom_bottom_pixel += padding
 
-        return [(top_left_pixel, top_top_pixel, top_right_pixel, top_bottom_pixel),
-                (bottom_left_pixel, bottom_top_pixel, bottom_right_pixel,
-                 bottom_bottom_pixel)]
+        top_box = (top_left_pixel,
+                   top_top_pixel,
+                   top_right_pixel,
+                   top_bottom_pixel)
+
+        bottom_box = (bottom_left_pixel,
+                      bottom_top_pixel,
+                      bottom_right_pixel,
+                      bottom_bottom_pixel)
+
+        return [top_box, bottom_box]
 
     def split_image(self, url):
         '''

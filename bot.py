@@ -63,7 +63,7 @@ class Bot(object):
                 meme_list = self.gi.get_memegen(memegen_url)
                 meme_type = meme_list[0]
                 text = meme_list[1]
-                if text == None and self.gi.is_memegen_direct_url(imageUrl):
+                if text is None and self.gi.is_memegen_direct_url(imageUrl):
                     text = self.process_image(imageUrl)
                 return text
             # imgur webpage. get direct image and run ocr
