@@ -104,8 +104,8 @@ class ImageToText(object):
         # Skip watermarks
         bottom_center = image.crop((bottom_quarter_lx, bottom_quarter_y,
                                    bottom_quarter_rx, height))
-        bottom_bottom_pixel = (bottom_quarter_y +
-                               self.get_bottom_of_text(bottom_center))
+        bottom_bottom_pixel = (bottom_quarter_y
+                               + self.get_bottom_of_text(bottom_center))
 
         bottom_left = image.crop((0, bottom_quarter_y, middle_of_width,
                                  bottom_bottom_pixel))
@@ -120,11 +120,11 @@ class ImageToText(object):
                                self.get_bottom_of_text(top_right))
 
         bottom_left_pixel = self.get_left_of_text(bottom_left)
-        bottom_right_pixel = (middle_of_width +
-                              self.get_right_of_text(bottom_right))
-        bottom_top_pixel = (bottom_quarter_y +
-                            min(self.get_top_of_text(bottom_left),
-                                self.get_top_of_text(bottom_right)))
+        bottom_right_pixel = (middle_of_width
+                              + self.get_right_of_text(bottom_right))
+        bottom_top_pixel = (bottom_quarter_y
+                            + min(self.get_top_of_text(bottom_left),
+                                  self.get_top_of_text(bottom_right)))
 
         padding = 10
         if top_left_pixel - padding > 0:
