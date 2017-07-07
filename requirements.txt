@@ -6,7 +6,7 @@ Cython==0.25.2
 idna==2.5
 lxml==3.8.0
 olefile==0.44
-Pillow==4.1.1
+Pillow==4.2.1
 pytesseract==0.1.7
 requests==2.18.1
 six==1.10.0
