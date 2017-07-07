@@ -1,29 +1,29 @@
 #!/usr/bin/env python
 import requests
 from bs4 import BeautifulSoup
-from imageExtensions import imageExtensions
+from image_extensions import ImageExtensions
 
 
-class getImage(object):
+class GetImage(object):
     def __init__(self):
-        self.EXTENSIONS = imageExtensions().EXTENSIONS
+        self.EXTENSIONS = ImageExtensions().EXTENSIONS
 
     ########################################
     # imgflip
-    def imgFlipDirectUrl(self, url):
+    def is_imgflip_direct_url(self, url):
         if 'i.imgflip' in url:
             return True
         return False
 
-    def imgFlipUrlTransform(self, url):
-        if self.imgFlipDirectUrl(url):
+    def transform_imgflip_url(self, url):
+        if self.is_imgflip_direct_url(url):
             prefix = url[:url.index('i')]
             suffix = url[url.rindex('/'):url.rindex('.')]
             return prefix + 'imgflip.com/i' + suffix
         else:
             return url
 
-    def getImgFlip(self, url):
+    def get_imgflip(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         img = soup.find('img', {'id': 'im'})
@@ -34,20 +34,20 @@ class getImage(object):
 
     ########################################
     # makeameme
-    def makeAMemeDirectUrl(self, url):
+    def is_makeameme_direct_url(self, url):
         if 'media.makeameme' in url:
             return True
         return False
 
-    def makeAMemeTransform(self, url):
-        if self.makeAMemeDirectUrl(url):
+    def transform_makeameme_url(self, url):
+        if self.is_makeameme_direct_url(url):
             prefix = url[:url.index('media')]
             suffix = url[url.rindex('/'):url.rindex('.')]
             return prefix + 'makeameme.org/meme' + suffix
         else:
             return url
 
-    def getMakeAMeme(self, url):
+    def get_makeameme(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         div = soup.findAll('div', {'class': 'small-12 text-center'})
@@ -61,19 +61,19 @@ class getImage(object):
 
     ########################################
     # livememe
-    def liveMemeDirectUrl(self, url):
+    def is_livememe_direct_url(self, url):
         if 'lvme.me' in url or any(ext in url for ext in self.EXTENSIONS):
             return True
         return False
 
-    def liveMemeTransform(self, url):
-        if self.liveMemeDirectUrl(url):
+    def transform_livememe_url(self, url):
+        if self.is_livememe_direct_url(url):
             suffix = url[url.rindex('/'):url.rindex('.')]
             return 'http://www.livememe.com' + suffix
         else:
             return url
 
-    def getLiveMeme(self, url):
+    def get_livememe(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         style1 = 'word-wrap: break-word; font-weight: bold;'
@@ -92,19 +92,19 @@ class getImage(object):
 
     ########################################
     # memecaptain
-    def memeCaptainDirectUrl(self, url):
+    def is_memecaptain_direct_url(self, url):
         if any(ext in url for ext in self.EXTENSIONS):
             return True
         return False
 
-    def memeCaptainTransform(self, url):
-        if self.liveMemeDirectUrl(url):
+    def transform_memecaptain_url(self, url):
+        if self.is_livememe_direct_url(url):
             suffix = url[url.rindex('/'):url.rindex('.')]
             return 'https://memecaptain.com/gend_image_pages' + suffix
         else:
             return url
 
-    def getMemeCaptain(self, url):
+    def get_memecaptain(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         text = []
@@ -119,19 +119,19 @@ class getImage(object):
 
     ########################################
     # memegen
-    def memeGenDirectUrl(self, url):
+    def is_memegen_direct_url(self, url):
         if any(ext in url for ext in self.EXTENSIONS):
             return True
         return False
 
-    def memeGenTransform(self, url):
-        if self.liveMemeDirectUrl(url):
+    def transform_memegen_url(self, url):
+        if self.is_livememe_direct_url(url):
             suffix = url[url.rindex('/'):url.rindex('.')]
             return 'http://memegen.com/meme' + suffix
         else:
             return url
 
-    def getMemeGen(self, url):
+    def get_memegen(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         img = soup.find('img', {'class': 'img-polaroid'})
@@ -148,7 +148,7 @@ class getImage(object):
 
     ########################################
     # imgur
-    def getImgur(self, url):
+    def get_imgur(self, url):
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
         img = soup.find('link', {'rel': 'image_src'}).attrs['href']
@@ -164,7 +164,7 @@ class getImage(object):
 
 
 if __name__ == '__main__':
-    gi = getImage()
+    gi = GetImage()
     # url = 'https://imgflip.com/i/1r4za5'
     # print(gi.getImgFlip(url))
     # url = 'https://media.makeameme.org/created/you-know-what-594eef.jpg'
@@ -179,6 +179,6 @@ if __name__ == '__main__':
     # print(url)
     # print(gi.getMemeCaptain(url))
     url = 'http://m.memegen.com/xsu560.jpg'
-    url = gi.memeGenTransform(url)
+    url = gi.transform_memegen_url(url)
     print(url)
-    print(gi.getMemeGen(url))
+    print(gi.get_memegen(url))

@@ -3,12 +3,12 @@ import requests
 import json
 
 
-class redditParser(object):
+class RedditParser(object):
     '''
     Parses Reddit
     '''
 
-    def getRedditJson(self, url, user):
+    def get_reddit_json(self, url, user):
         '''
         url: Reddit json url
         i.e. https://www.reddit.com/r/AdviceAnimals/top/.json?sort=top&t=week
@@ -21,7 +21,7 @@ class redditParser(object):
         _json = json.loads(r.text)
         return _json
 
-    def writeJsonFile(self, _json, f):
+    def write_json_file(self, _json, f):
         '''
         _json: json object. Use getRedditJson as input
         f: json dump location
@@ -30,7 +30,7 @@ class redditParser(object):
         jsonFile = open(f, 'w')
         jsonFile.write(json.dumps(_json))
 
-    def openJsonFile(self, f):
+    def open_json_file(self, f):
         '''
         f: json dump file
         reads json dump file and returns json object
@@ -39,7 +39,7 @@ class redditParser(object):
             _json = json.load(redditJsonFile)
         return _json
 
-    def getParsedRedditJson(self, _json, key):
+    def get_parsed_reddit_json(self, _json, key):
         '''
         _json: Reddit json object
         key: what you want to parse on
@@ -67,22 +67,22 @@ def main(url, user, key, outFile, jsonFile=None):
     # import os
 
     output = open(outFile, 'w')
-    rp = redditParser()
+    rp = RedditParser()
     if type(jsonFile) is str:
-        rp.writeJsonFile(rp.getRedditJson(url, user), jsonFile)
-        _json = rp.openJsonFile(jsonFile)
+        rp.write_json_file(rp.get_reddit_json(url, user), jsonFile)
+        _json = rp.open_json_file(jsonFile)
     else:
-        _json = rp.getRedditJson(url, user)
+        _json = rp.get_reddit_json(url, user)
 
     while 'data' not in _json:
         time.sleep(4)
         if type(jsonFile) is str:
-            rp.writeJsonFile(rp.getRedditJson(url, user), jsonFile)
-            _json = rp.openJsonFile(jsonFile)
+            rp.write_json_file(rp.get_reddit_json(url, user), jsonFile)
+            _json = rp.open_json_file(jsonFile)
         else:
-            _json = rp.getRedditJson(url, user)
+            _json = rp.get_reddit_json(url, user)
 
-    rpGenerator = rp.getParsedRedditJson(_json, key)
+    rpGenerator = rp.get_parsed_reddit_json(_json, key)
     for i, k in enumerate(rpGenerator):
         string = "{:02}: {}".format(i, k)
         output.write("{}\n".format(string))
