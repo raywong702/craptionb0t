@@ -27,10 +27,10 @@ class ImageToText(object):
         '''
         width, height = image.size
         top = height
-        pixelMap = image.load()
+        pixel_map = image.load()
         for x in range(width):
             for y in range(height):
-                if pixelMap[x, y] >= limit and y < top:
+                if pixel_map[x, y] >= limit and y < top:
                     top = y
         return top
 
@@ -42,10 +42,10 @@ class ImageToText(object):
         '''
         width, height = image.size
         bottom = 0
-        pixelMap = image.load()
+        pixel_map = image.load()
         for x in range(width):
             for y in range(height):
-                if pixelMap[x, y] >= limit and y > bottom:
+                if pixel_map[x, y] >= limit and y > bottom:
                     bottom = y
         return bottom
 
@@ -57,10 +57,10 @@ class ImageToText(object):
         '''
         width, height = image.size
         left = width
-        pixelMap = image.load()
+        pixel_map = image.load()
         for x in range(width):
             for y in range(height):
-                if pixelMap[x, y] >= limit and x < left:
+                if pixel_map[x, y] >= limit and x < left:
                     left = x
         return left
 
@@ -72,10 +72,10 @@ class ImageToText(object):
         '''
         width, height = image.size
         right = 0
-        pixelMap = image.load()
+        pixel_map = image.load()
         for x in range(width):
             for y in range(height):
-                if pixelMap[x, y] >= limit and x > right:
+                if pixel_map[x, y] >= limit and x > right:
                     right = x
         return right
 
@@ -91,63 +91,63 @@ class ImageToText(object):
         image = ImageOps.invert(image)
 
         width, height = image.size
-        middleOfWidth = width // 2
-        quarterOfWidth = width // 4
-        quarterOfHeight = height // 4
-        bottomQuarterY = height - quarterOfHeight
-        bottomQuarterLX = middleOfWidth - quarterOfWidth
-        bottomQuarterRX = middleOfWidth + quarterOfWidth
+        middle_of_width = width // 2
+        quarter_of_width = width // 4
+        quarter_of_height = height // 4
+        bottom_quarter_y = height - quarter_of_height
+        bottom_quarter_lx = middle_of_width - quarter_of_width
+        bottom_quarter_rx = middle_of_width + quarter_of_width
 
-        topLeft = image.crop((0, 0, middleOfWidth, quarterOfHeight))
-        topRight = image.crop((middleOfWidth, 0, width, quarterOfHeight))
+        top_left = image.crop((0, 0, middle_of_width, quarter_of_height))
+        top_right = image.crop((middle_of_width, 0, width, quarter_of_height))
 
         # Skip watermarks
-        bottomCenter = image.crop((bottomQuarterLX, bottomQuarterY,
-                                   bottomQuarterRX, height))
-        bottomBottomPixel = (bottomQuarterY +
-                             self.get_bottom_of_text(bottomCenter))
+        bottom_center = image.crop((bottom_quarter_lx, bottom_quarter_y,
+                                   bottom_quarter_rx, height))
+        bottom_bottom_pixel = (bottom_quarter_y +
+                             self.get_bottom_of_text(bottom_center))
 
-        bottomLeft = image.crop((0, bottomQuarterY, middleOfWidth,
-                                 bottomBottomPixel))
-        bottomRight = image.crop((middleOfWidth, bottomQuarterY, width,
-                                  bottomBottomPixel))
+        bottom_left = image.crop((0, bottom_quarter_y, middle_of_width,
+                                 bottom_bottom_pixel))
+        bottom_right = image.crop((middle_of_width, bottom_quarter_y, width,
+                                  bottom_bottom_pixel))
 
-        topLeftPixel = self.get_left_of_text(topLeft)
-        topRightPixel = middleOfWidth + self.get_right_of_text(topRight)
-        topTopPixel = min(self.get_top_of_text(topLeft),
-                          self.get_top_of_text(topRight))
-        topBottomPixel = max(self.get_bottom_of_text(topLeft),
-                             self.get_bottom_of_text(topRight))
+        top_left_pixel = self.get_left_of_text(top_left)
+        top_right_pixel = middle_of_width + self.get_right_of_text(top_right)
+        top_top_pixel = min(self.get_top_of_text(top_left),
+                          self.get_top_of_text(top_right))
+        top_bottom_pixel = max(self.get_bottom_of_text(top_left),
+                             self.get_bottom_of_text(top_right))
 
-        bottomLeftPixel = self.get_left_of_text(bottomLeft)
-        bottomRightPixel = middleOfWidth + self.get_right_of_text(bottomRight)
-        bottomTopPixel = (bottomQuarterY +
-                          min(self.get_top_of_text(bottomLeft),
-                              self.get_top_of_text(bottomRight)))
+        bottom_left_pixel = self.get_left_of_text(bottom_left)
+        bottom_right_pixel = middle_of_width + self.get_right_of_text(bottom_right)
+        bottom_top_pixel = (bottom_quarter_y +
+                          min(self.get_top_of_text(bottom_left),
+                              self.get_top_of_text(bottom_right)))
 
         padding = 10
-        if topLeftPixel - padding > 0:
-            topLeftPixel -= padding
-        if topRightPixel + padding < width:
-            topRightPixel += padding
-        if topTopPixel - padding > 0:
-            topTopPixel -= padding
+        if top_left_pixel - padding > 0:
+            top_left_pixel -= padding
+        if top_right_pixel + padding < width:
+            top_right_pixel += padding
+        if top_top_pixel - padding > 0:
+            top_top_pixel -= padding
         else:
-            topTopPixel = 0
-        if topBottomPixel + padding < height:
-            topBottomPixel += padding
-        if bottomLeftPixel - padding > 0:
-            bottomLeftPixel -= padding
-        if bottomRightPixel + padding < width:
-            bottomRightPixel += padding
-        if bottomTopPixel - padding > 0:
-            bottomTopPixel -= padding
-        if bottomBottomPixel + padding < height:
-            bottomBottomPixel += padding
+            top_top_pixel = 0
+        if top_bottom_pixel + padding < height:
+            top_bottom_pixel += padding
+        if bottom_left_pixel - padding > 0:
+            bottom_left_pixel -= padding
+        if bottom_right_pixel + padding < width:
+            bottom_right_pixel += padding
+        if bottom_top_pixel - padding > 0:
+            bottom_top_pixel -= padding
+        if bottom_bottom_pixel + padding < height:
+            bottom_bottom_pixel += padding
 
-        return [(topLeftPixel, topTopPixel, topRightPixel, topBottomPixel),
-                (bottomLeftPixel, bottomTopPixel, bottomRightPixel,
-                 bottomBottomPixel)]
+        return [(top_left_pixel, top_top_pixel, top_right_pixel, top_bottom_pixel),
+                (bottom_left_pixel, bottom_top_pixel, bottom_right_pixel,
+                 bottom_bottom_pixel)]
 
     def split_image(self, url):
         '''
@@ -156,16 +156,16 @@ class ImageToText(object):
         returns top and bottom image objects containing the text
         '''
         image = self.get_image(url)
-        topCoordinates, bottomCoordinates = self.get_coordinates(url)
+        top_coordinates, bottom_coordinates = self.get_coordinates(url)
 
-        top = image.crop(topCoordinates)
-        bottom = image.crop(bottomCoordinates)
+        top = image.crop(top_coordinates)
+        bottom = image.crop(bottom_coordinates)
         # top.save('top.png')
         # bottom.save('bottom.png')
 
         return top, bottom
 
-    def process_image(self, image, lang=None, tessDir=None):
+    def process_image(self, image, lang=None, tess_dir=None):
         '''
         image: image object
         lang: tesseract language
@@ -182,19 +182,19 @@ class ImageToText(object):
                 else:
                     image.putpixel((x, y), (0, 0, 0))
 
-        if type(lang) is str and type(tessDir) is str:
-            tessDir = '--tessdata-dir "{}"'.format(tessDir)
+        if type(lang) is str and type(tess_dir) is str:
+            tess_dir = '--tessdata-dir "{}"'.format(tess_dir)
             result = pytesseract.image_to_string(image, lang=lang,
-                                                 config=tessDir)
-        elif type(lang) is str and type(tessDir) is None:
+                                                 config=tess_dir)
+        elif type(lang) is str and type(tess_dir) is None:
             result = pytesseract.image_to_string(image, lang=lang)
-        elif type(lang) is None and type(tessDir) is str:
-            result = pytesseract.image_to_string(image, config=tessDir)
+        elif type(lang) is None and type(tess_dir) is str:
+            result = pytesseract.image_to_string(image, config=tess_dir)
         else:
             result = pytesseract.image_to_string(image)
         return result
 
-    def print(self, url, lang=None, tessDir=None):
+    def print(self, url, lang=None, tess_dir=None):
         '''
         url: url of image
         lang: tesseract language
@@ -205,19 +205,19 @@ class ImageToText(object):
         print('-' * 40)
         i = ImageToText()
         top, bottom = i.split_image(url)
-        topText = i.process_image(top, lang, tessDir)
-        bottomText = i.process_image(bottom, lang, tessDir)
-        topText = topText.replace('\r', '').replace('\n', '')
-        bottomText = bottomText.replace('\r', '').replace('\n', '')
-        print(topText)
-        print(bottomText)
+        top_text = i.process_image(top, lang, tess_dir)
+        bottom_text = i.process_image(bottom, lang, tess_dir)
+        top_text = top_text.replace('\r', '').replace('\n', '')
+        bottom_text = bottom_text.replace('\r', '').replace('\n', '')
+        print(top_text)
+        print(bottom_text)
         print('-' * 40)
-        # print(TextBlob(topText).correct())
-        # print(TextBlob(bottomText).correct())
+        # print(TextBlob(top_text).correct())
+        # print(TextBlob(bottom_text).correct())
         # print('-' * 40)
         full = i.get_image(url)
         # full.save('full.png')
-        text = i.process_image(i.get_image(url), lang, tessDir)
+        text = i.process_image(i.get_image(url), lang, tess_dir)
         text = text.replace('\r', '').replace('\n', '')
         print(text)
         print('-' * 40)
@@ -226,25 +226,25 @@ class ImageToText(object):
         # print(spell(text))
 
 
-def main(imageToText, url, lang=None, tessDir=None):
+def main(imageToText, url, lang=None, tess_dir=None):
     '''
     url: url of image
     lang: tesseract language
     tessDir: tesseract config dir
     prints text of image for debugging
     '''
-    imageToText.print(url, lang, tessDir)
+    imageToText.print(url, lang, tess_dir)
 
 
 if __name__ == '__main__':
     import os
 
     lang = 'joh'
-    tessDir = os.path.dirname(os.path.realpath(__file__))
-    tessDir += 'tessdata'
+    tess_dir = os.path.dirname(os.path.realpath(__file__))
+    tess_dir += 'tessdata'
     # url = 'https://b.thumbs.redditmedia.com/'
     # url += '70S2ljgfXlUd0wzZmP8kL92Rlp4mI5TzVfuwDREq-8A.jpg'
     # url = 'https://i.imgur.com/Kr6Gz5Q.jpg'
     # url = 'https://i.redd.it/rwu3smidtv3z.jpg'
     url = 'http://i.imgur.com/QrCwD5n.jpg'
-    main(ImageToText(), url, lang, tessDir)
+    main(ImageToText(), url, lang, tess_dir)

@@ -80,15 +80,15 @@ class GetImage(object):
         style2 = 'word-wrap: break-word; margin-top: 11px;'
         text = []
         try:
-            memeType = soup.findAll('div', {'style': style1})[0].text.strip()
+            meme_type = soup.findAll('div', {'style': style1})[0].text.strip()
         except IndexError:
-            memeType = None
+            meme_type = None
         memeText = soup.findAll('div', {'style': style2})
         for i in memeText:
             text.append(i.text.upper().strip())
         # index 0 is meme
         # index 1 is text
-        return (memeType, text)
+        return (meme_type, text)
 
     ########################################
     # memecaptain
@@ -109,13 +109,13 @@ class GetImage(object):
         soup = BeautifulSoup(page, 'lxml')
         text = []
         try:
-            memeType = soup.findAll('small')[0].text.strip()
+            meme_type = soup.findAll('small')[0].text.strip()
         except IndexError:
-            memeType = None
+            meme_type = None
         memeText = soup.findAll('h1')
         for i in memeText:
             text.append(i.text.upper().strip())
-        return (memeType, text)
+        return (meme_type, text)
 
     ########################################
     # memegen
@@ -137,14 +137,14 @@ class GetImage(object):
         img = soup.find('img', {'class': 'img-polaroid'})
         meme = img.attrs['alt']
         try:
-            memeType = meme[:meme.index(':')].strip()
+            meme_type = meme[:meme.index(':')].strip()
         except:
-            memeType = None
+            meme_type = None
         try:
             text = meme[meme.index(':')+1:meme.rindex('-')].strip()
         except:
             text = None
-        return (memeType, text)
+        return (meme_type, text)
 
     ########################################
     # imgur

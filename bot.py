@@ -9,12 +9,12 @@ from get_image_text import GetImage
 
 
 class Bot(object):
-    def __init__(self, lang, tessDir):
+    def __init__(self, lang, tess_dir):
         self.rp = RedditParser()
         self.itt = ImageToText()
         self.gi = GetImage()
         self.lang = lang
-        self.tessDir = tessDir
+        self.tess_dir = tess_dir
         self.EXTENSIONS = ImageExtensions().EXTENSIONS
 
     def strip_text(self, text):
@@ -22,47 +22,47 @@ class Bot(object):
 
     def process_image(self, img):
         text = self.itt.process_image(self.itt.get_image(img), self.lang,
-                                      self.tessDir)
+                                      self.tess_dir)
         return self.strip_text(text)
 
     def get_meme_text(self, imageUrl):
             # special case for imgflip. get text from alt attr of image
             if 'imgflip' in imageUrl:
-                imgFlipUrl = self.gi.transform_imgflip_url(imageUrl)
-                memeList = self.gi.get_imgflip(imgFlipUrl)
-                memeType = memeList[0]
-                text = memeList[1]
+                img_flip_url = self.gi.transform_imgflip_url(imageUrl)
+                meme_list = self.gi.get_imgflip(img_flip_url)
+                meme_type = meme_list[0]
+                text = meme_list[1]
                 return text
             # special case for makeameme. get text from body
             elif 'makeameme' in imageUrl:
-                makeAMemeUrl = self.gi.transform_makeameme_url(imageUrl)
-                memeList = self.gi.get_makeameme(makeAMemeUrl)
-                memeType = memeList[0]
-                text = memeList[1]
+                makeameme_url = self.gi.transform_makeameme_url(imageUrl)
+                meme_list = self.gi.get_makeameme(makeameme_url)
+                meme_type = meme_list[0]
+                text = meme_list[1]
                 return text
             elif 'livememe' in imageUrl or 'lvme.me' in imageUrl:
-                liveMemeUrl = self.gi.transform_livememe_url(imageUrl)
-                memeList = self.gi.get_livememe(liveMemeUrl)
-                memeType = memeList[0]
-                memeText = memeList[1]
+                livememe_url = self.gi.transform_livememe_url(imageUrl)
+                meme_list = self.gi.get_livememe(livememe_url)
+                meme_type = meme_list[0]
+                meme_text = meme_list[1]
                 text = ''
-                for i in memeText:
+                for i in meme_text:
                     text += i.strip() + '\n'
                 return text
             elif 'memecaptain' in imageUrl:
-                memeCaptainUrl = self.gi.transform_memecaptain_url(imageUrl)
-                memeList = self.gi.get_memecaptain(memeCaptainUrl)
-                memeType = memeList[0]
-                memeText = memeList[1]
+                memecaptain_url = self.gi.transform_memecaptain_url(imageUrl)
+                meme_list = self.gi.get_memecaptain(memecaptain_url)
+                meme_type = meme_list[0]
+                meme_text = meme_list[1]
                 text = ''
-                for i in memeText:
+                for i in meme_text:
                     text += i.strip() + '\n'
                 return text
             elif 'memegen' in imageUrl:
-                memeGenUrl = self.gi.transform_memegen_url(imageUrl)
-                memeList = self.gi.get_memegen(memeGenUrl)
-                memeType = memeList[0]
-                text = memeList[1]
+                memegen_url = self.gi.transform_memegen_url(imageUrl)
+                meme_list = self.gi.get_memegen(memegen_url)
+                meme_type = meme_list[0]
+                text = meme_list[1]
                 if text == None and self.gi.is_memegen_direct_url(imageUrl):
                     text = self.process_image(imageUrl)
                 return text
@@ -97,15 +97,15 @@ class Bot(object):
 if __name__ == '__main__':
     import os
 
-    subredditUrl = 'https://www.reddit.com/r/AdviceAnimals/top/'
-    subredditUrl += '.json?sort=top&t=week'
-    # subredditUrl = 'https://www.reddit.com/domain/memegen.com/.json'
+    subreddit_url = 'https://www.reddit.com/r/AdviceAnimals/top/'
+    subreddit_url += '.json?sort=top&t=week'
+    # subreddit_url = 'https://www.reddit.com/domain/memegen.com/.json'
     user = 'craptionb0t'
     key = 'url'
 
     lang = 'joh'
-    tessDir = os.path.dirname(os.path.realpath(__file__))
-    tessDir += 'tessdata'
+    tess_dir = os.path.dirname(os.path.realpath(__file__))
+    tess_dir += 'tessdata'
 
-    b = Bot(lang, tessDir)
-    b.get_all_meme_text(subredditUrl, user, key)
+    b = Bot(lang, tess_dir)
+    b.get_all_meme_text(subreddit_url, user, key)

@@ -15,8 +15,8 @@ class RedditParser(object):
         returns json object from Reddit json url
         '''
         header = {}
-        userAgent = 'app:python:v0.0.0 (by /u/{})'.format(user)
-        header['User-agent'] = userAgent
+        user_agent = 'app:python:v0.0.0 (by /u/{})'.format(user)
+        header['User-agent'] = user_agent
         r = requests.get(url, headers=header)
         _json = json.loads(r.text)
         return _json
@@ -27,16 +27,16 @@ class RedditParser(object):
         f: json dump location
         writes Reddit json url to file
         '''
-        jsonFile = open(f, 'w')
-        jsonFile.write(json.dumps(_json))
+        json_file = open(f, 'w')
+        json_file.write(json.dumps(_json))
 
     def open_json_file(self, f):
         '''
         f: json dump file
         reads json dump file and returns json object
         '''
-        with open(f) as redditJsonFile:
-            _json = json.load(redditJsonFile)
+        with open(f) as reddit_json_file:
+            _json = json.load(reddit_json_file)
         return _json
 
     def get_parsed_reddit_json(self, _json, key):
@@ -51,7 +51,7 @@ class RedditParser(object):
             yield child['data'][key]
 
 
-def main(url, user, key, outFile, jsonFile=None):
+def main(url, user, key, out_file, json_file=None):
     '''
     url: Reddit json url
     i.e. https://www.reddit.com/r/AdviceAnimals/top/.json?sort=top&t=week
@@ -66,19 +66,19 @@ def main(url, user, key, outFile, jsonFile=None):
     import time
     # import os
 
-    output = open(outFile, 'w')
+    output = open(out_file, 'w')
     rp = RedditParser()
-    if type(jsonFile) is str:
-        rp.write_json_file(rp.get_reddit_json(url, user), jsonFile)
-        _json = rp.open_json_file(jsonFile)
+    if type(json_file) is str:
+        rp.write_json_file(rp.get_reddit_json(url, user), json_file)
+        _json = rp.open_json_file(json_file)
     else:
         _json = rp.get_reddit_json(url, user)
 
     while 'data' not in _json:
         time.sleep(4)
-        if type(jsonFile) is str:
-            rp.write_json_file(rp.get_reddit_json(url, user), jsonFile)
-            _json = rp.open_json_file(jsonFile)
+        if type(json_file) is str:
+            rp.write_json_file(rp.get_reddit_json(url, user), json_file)
+            _json = rp.open_json_file(json_file)
         else:
             _json = rp.get_reddit_json(url, user)
 
@@ -94,9 +94,9 @@ if __name__ == '__main__':
     url = 'https://www.reddit.com/r/AdviceAnimals/top/.json?sort=top&t=week'
     # url = 'https://www.reddit.com/r/AdviceAnimals/comments/6k5onz/think_of_the_children_you_savage/.json'
     user = 'craptionb0t'
-    jsonFile = 'reddit.json'
-    outFile = 'thumbnails.txt'
+    json_file = 'reddit.json'
+    out_file = 'thumbnails.txt'
     key = 'url'
 
-    main(url, user, key, outFile)
-    # main(url, user, key, outFile, jsonFile)
+    main(url, user, key, out_file)
+    # main(url, user, key, out_file, json_file)
