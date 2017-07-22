@@ -8,20 +8,17 @@ from PIL import ImageOps
 
 
 class OCR(object):
-    '''
-    Performs OCR on meme image and returns approximate text
+    ''' Performs OCR on meme image and returns approximate text
     '''
 
     def get_image(self, url):
-        '''
-        url: url of image
+        ''' url: url of image
         returns image object of url
         '''
         return Image.open(BytesIO(requests.get(url).content))
 
     def get_top_of_text(self, image, limit=250):
-        '''
-        image: image object
+        ''' image: image object
         limit: threshold to scan for
         returns top most pixel of image >= limit
         '''
@@ -35,8 +32,7 @@ class OCR(object):
         return top
 
     def get_bottom_of_text(self, image, limit=250):
-        '''
-        image: image object
+        ''' image: image object
         limit: threshold to scan for
         returns bottom most pixel of image >= limit
         '''
@@ -50,8 +46,7 @@ class OCR(object):
         return bottom
 
     def get_left_of_text(self, image, limit=250):
-        '''
-        image: image object
+        ''' image: image object
         limit: threshold to scan for
         returns left most pixel of image >= limit
         '''
@@ -65,8 +60,7 @@ class OCR(object):
         return left
 
     def get_right_of_text(self, image, limit=250):
-        '''
-        image: image object
+        ''' image: image object
         limit: threshold to scan for
         returns right most pixel of image >= limit
         '''
@@ -80,8 +74,7 @@ class OCR(object):
         return right
 
     def get_coordinates(self, url):
-        '''
-        url: url of image
+        ''' url: url of image
         assumes text of image is in top and bottom quarter
         returns two tuples surrounding the top and bottom text of image
         '''
@@ -159,8 +152,7 @@ class OCR(object):
         return [top_box, bottom_box]
 
     def split_image(self, url):
-        '''
-        url: url of image
+        ''' url: url of image
         assumes text of image is in top and bottom quarter
         returns top and bottom image objects containing the text
         '''
@@ -175,8 +167,7 @@ class OCR(object):
         return top, bottom
 
     def process_image(self, image, lang=None, tess_dir=None):
-        '''
-        image: image object
+        ''' image: image object
         lang: tesseract language
         tessDir: tesseract config dir
         converts image to black and white
@@ -204,8 +195,7 @@ class OCR(object):
         return result
 
     def print(self, url, lang=None, tess_dir=None):
-        '''
-        url: url of image
+        ''' url: url of image
         lang: tesseract language
         tessDir: tesseract config dir
         prints text of image through top/bottom split and through full image
