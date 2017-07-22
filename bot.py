@@ -14,7 +14,8 @@ class Bot(object):
         self.reddit = praw.Reddit('bot0')
         self.gt = GetText(lang, tess_dir)
 
-    def get_submissions(self, subreddit, filter_type, time_filter=all, limit=25):
+    def get_submissions(self, subreddit, filter_type,
+                        time_filter=all, limit=25):
         ''' subreddit: subreddit
         filter_type: hot, new, rising, controversial, top
         time_filter: all, day, hour, month, week, year (default: all)
