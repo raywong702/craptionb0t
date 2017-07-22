@@ -1,16 +1,13 @@
 #!/usr/bin/env python
-import time
-import requests
-from bs4 import BeautifulSoup
+import praw
 from image_extensions import ImageExtensions
-from reddit_parser import RedditParser
 from image_to_text import ImageToText
 from get_image_text import GetImage
 
 
 class Bot(object):
     def __init__(self, lang, tess_dir):
-        self.rp = RedditParser()
+        self.reddit = praw.Reddit('bot0')
         self.itt = ImageToText()
         self.gi = GetImage()
         self.lang = lang
@@ -77,19 +74,14 @@ class Bot(object):
             else:
                 return '*' * 10
 
-    def get_all_meme_text(self, subredditUrl, user, key):
-        _json = self.rp.get_reddit_json(subredditUrl, user)
-        while 'data' not in _json:
-            time.sleep(4)
-            _json = RedditParser.get_reddit_json(subredditUrl, user)
-
-        gen = self.rp.get_parsed_reddit_json(_json, key)
+    def get_all_meme_text(self, subreddit):
+        _subreddit = self.reddit.subreddit(subreddit)
         divider = '-' * 50
         print(divider)
-        for i, urlKey in enumerate(gen):
+        for i, submission in enumerate(_subreddit.top('week', limit=25)):
             print(f'{i:02}')
-            print(f'{urlKey}')
-            print(self.get_meme_text(urlKey))
+            print(f'{submission.url}')
+            print(self.get_meme_text(submission.url))
             print('')
             print(divider)
 
@@ -97,15 +89,11 @@ class Bot(object):
 if __name__ == '__main__':
     import os
 
-    subreddit_url = 'https://www.reddit.com/r/AdviceAnimals/top/'
-    subreddit_url += '.json?sort=top&t=week'
-    # subreddit_url = 'https://www.reddit.com/domain/memegen.com/.json'
-    user = 'craptionb0t'
-    key = 'url'
+    subreddit = 'adviceanimals'
 
     lang = 'joh'
     tess_dir = os.path.dirname(os.path.realpath(__file__))
     tess_dir += 'tessdata'
 
     b = Bot(lang, tess_dir)
-    b.get_all_meme_text(subreddit_url, user, key)
+    b.get_all_meme_text(subreddit)
