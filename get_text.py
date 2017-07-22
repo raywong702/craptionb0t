@@ -1,12 +1,26 @@
 #!/usr/bin/env python
 import requests
 from bs4 import BeautifulSoup
-from ext import ImageExtensions
+from ocr import OCR
 
 
-class GetImage(object):
-    def __init__(self):
-        self.EXTENSIONS = ImageExtensions().EXTENSIONS
+class GetText(object):
+    def __init__(self, lang, tess_dir):
+        self._ocr = OCR()
+        self.lang = lang
+        self.tess_dir = tess_dir
+        self.EXTENSIONS = ('.jpg',
+                           '.png',
+                           '.gif'
+                           )
+
+    def strip_text(self, text):
+        return text.replace('\r', '').replace('\n', '')
+
+    def process_image(self, img):
+        text = self._ocr.process_image(self._ocr.get_image(img), self.lang,
+                                       self.tess_dir)
+        return self.strip_text(text)
 
     ########################################
     # imgflip
@@ -52,7 +66,7 @@ class GetImage(object):
         soup = BeautifulSoup(page, 'lxml')
         div = soup.findAll('div', {'class': 'small-12 text-center'})
         meme = []
-        for text in div[len(div)-1].text.split('\n'):
+        for text in div[len(div) - 1].text.split('\n'):
             if len(text) > 0 and 'add your own captions' not in text:
                 meme.append(text.strip())
         # index 0 is meme
@@ -141,7 +155,7 @@ class GetImage(object):
         except:
             meme_type = None
         try:
-            text = meme[meme.index(':')+1:meme.rindex('-')].strip()
+            text = meme[meme.index(':') + 1:meme.rindex('-')].strip()
         except:
             text = None
         return (meme_type, text)
@@ -154,31 +168,53 @@ class GetImage(object):
         img = soup.find('link', {'rel': 'image_src'}).attrs['href']
         return img
 
-    # makeameme.org
-    # media.makeameme.org
-    # livememe.com
-    # memecaptain.com
-    # i.memecaptain.com
-    # memegen.com
-    # m.memegen.com
-
-
-if __name__ == '__main__':
-    gi = GetImage()
-    # url = 'https://imgflip.com/i/1r4za5'
-    # print(gi.getImgFlip(url))
-    # url = 'https://media.makeameme.org/created/you-know-what-594eef.jpg'
-    # url = gi.makeAMemeTransform(url)
-    # print(gi.getMakeAMeme(url))
-    # url = 'http://e.lvme.me/kh3mgv5.jpg'
-    # url = 'http://www.livememe.com/g6m9iap'
-    # url = gi.liveMemeTransform(url)
-    # print(gi.getLiveMeme(url))
-    # url = 'https://i.memecaptain.com/gend_images/11iK0Q.gif'
-    # url = gi.memeCaptainTransform(url)
-    # print(url)
-    # print(gi.getMemeCaptain(url))
-    url = 'http://m.memegen.com/xsu560.jpg'
-    url = gi.transform_memegen_url(url)
-    print(url)
-    print(gi.get_memegen(url))
+    ########################################
+    def get_meme_text(self, imageUrl):
+        if 'imgflip' in imageUrl:
+            img_flip_url = self.transform_imgflip_url(imageUrl)
+            meme_list = self.get_imgflip(img_flip_url)
+            meme_type = meme_list[0]
+            text = meme_list[1]
+            return text
+        elif 'makeameme' in imageUrl:
+            makeameme_url = self.transform_makeameme_url(imageUrl)
+            meme_list = self.get_makeameme(makeameme_url)
+            meme_type = meme_list[0]
+            text = meme_list[1]
+            return text
+        elif 'livememe' in imageUrl or 'lvme.me' in imageUrl:
+            livememe_url = self.transform_livememe_url(imageUrl)
+            meme_list = self.get_livememe(livememe_url)
+            meme_type = meme_list[0]
+            meme_text = meme_list[1]
+            text = ''
+            for i in meme_text:
+                text += i.strip() + '\n'
+            return text
+        elif 'memecaptain' in imageUrl:
+            memecaptain_url = self.transform_memecaptain_url(imageUrl)
+            meme_list = self.get_memecaptain(memecaptain_url)
+            meme_type = meme_list[0]
+            meme_text = meme_list[1]
+            text = ''
+            for i in meme_text:
+                text += i.strip() + '\n'
+            return text
+        elif 'memegen' in imageUrl:
+            memegen_url = self.transform_memegen_url(imageUrl)
+            meme_list = self.get_memegen(memegen_url)
+            meme_type = meme_list[0]
+            text = meme_list[1]
+            if text is None and self.is_memegen_direct_url(imageUrl):
+                text = self.process_image(imageUrl)
+            return text
+        # imgur webpage. get direct image and run ocr
+        elif '//imgur' in imageUrl:
+            img = self.get_imgur(imageUrl)
+            return self.process_image(img)
+        # direct image urls. primarily imgur and i.redd.it
+        elif any(ext in imageUrl for ext in self.EXTENSIONS):
+            return self.process_image(imageUrl)
+        # website urls. need to get text if exists or img to run ocr on
+        else:
+            return '*' * 10

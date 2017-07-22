@@ -7,9 +7,9 @@ from PIL import ImageOps
 # from textblob import TextBlob
 
 
-class ImageToText(object):
+class OCR(object):
     '''
-    Gets text from images
+    Performs OCR on meme image and returns approximate text
     '''
 
     def get_image(self, url):
@@ -212,7 +212,7 @@ class ImageToText(object):
         commented out autocorrect prints
         '''
         print('-' * 40)
-        i = ImageToText()
+        i = OCR()
         top, bottom = i.split_image(url)
         top_text = i.process_image(top, lang, tess_dir)
         bottom_text = i.process_image(bottom, lang, tess_dir)
@@ -233,27 +233,3 @@ class ImageToText(object):
         # print(TextBlob(text).correct())
         # print('-' * 40)
         # print(spell(text))
-
-
-def main(imageToText, url, lang=None, tess_dir=None):
-    '''
-    url: url of image
-    lang: tesseract language
-    tessDir: tesseract config dir
-    prints text of image for debugging
-    '''
-    imageToText.print(url, lang, tess_dir)
-
-
-if __name__ == '__main__':
-    import os
-
-    lang = 'joh'
-    tess_dir = os.path.dirname(os.path.realpath(__file__))
-    tess_dir += 'tessdata'
-    # url = 'https://b.thumbs.redditmedia.com/'
-    # url += '70S2ljgfXlUd0wzZmP8kL92Rlp4mI5TzVfuwDREq-8A.jpg'
-    # url = 'https://i.imgur.com/Kr6Gz5Q.jpg'
-    # url = 'https://i.redd.it/rwu3smidtv3z.jpg'
-    url = 'http://i.imgur.com/QrCwD5n.jpg'
-    main(ImageToText(), url, lang, tess_dir)
