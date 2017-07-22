@@ -1,7 +1,7 @@
 # craptionb0t
 
 ## Requirements
-### Requires tesseract
+#### Requires tesseract
 See [tesseract wiki](https://github.com/tesseract-ocr/tesseract/wiki)
 
 For OSX
@@ -9,13 +9,13 @@ For OSX
 brew install tesseract
 ```
 
-### Requires Python3.6+
+#### Requires Python3.6+
 For OSX
 ```shell
 brew install python3
 ```
 
-Install required Python packages
+#### Install required Python packages
 ```shell
 pip install -r requirements.txt
 ```
