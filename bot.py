@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import praw
-from image_extensions import ImageExtensions
-from image_to_text import ImageToText
-from get_image_text import GetImage
+from ext import ImageExtensions
+from ocr import ImageToText
+from get_text import GetImage
 
 
 class Bot(object):

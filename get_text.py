@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import requests
 from bs4 import BeautifulSoup
-from image_extensions import ImageExtensions
+from ext import ImageExtensions
 
 
 class GetImage(object):
