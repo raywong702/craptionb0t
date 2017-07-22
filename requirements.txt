@@ -2,12 +2,15 @@ beautifulsoup4==4.6.0
 bs4==0.0.1
 certifi==2017.4.17
 chardet==3.0.4
-Cython==0.25.2
+Cython==0.26
 idna==2.5
 lxml==3.8.0
 olefile==0.44
 Pillow==4.2.1
+praw==5.0.1
+prawcore==0.11.0
 pytesseract==0.1.7
 requests==2.18.1
 six==1.10.0
-urllib3==1.21.1
+update-checker==0.16
+urllib3==1.22
