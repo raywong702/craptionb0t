@@ -23,11 +23,11 @@ class Bot(object):
         '''
         _subreddit = self.reddit.subreddit(subreddit)
         if filter_type == 'hot':
-            return _subreddit.hot(time_filter, limit=limit)
+            return _subreddit.hot(limit=limit)
         elif filter_type == 'new':
-            return _subreddit.new(time_filter, limit=limit)
+            return _subreddit.new(limit=limit)
         elif filter_type == 'rising':
-            return _subreddit.rising(time_filter, limit=limit)
+            return _subreddit.rising(limit=limit)
         elif filter_type == 'controversial':
             return _subreddit.controversial(time_filter, limit=limit)
         elif filter_type == 'top':
@@ -46,9 +46,31 @@ class Bot(object):
                                            time_filter, limit)
         print(divider)
         for i, submission in enumerate(submissions):
+            text = self.gt.get_meme_text(submission.url)
             print(f'{i:02}')
             print(f'{submission.url}')
-            print(self.gt.get_meme_text(submission.url))
+            print(text)
+            print('')
+            print(divider)
+
+    def post_text(self, subreddit, filter_type, time_filter=all, limit=25):
+        ''' subreddit: subreddit
+        filter_type: hot, new, rising, controversial, top
+        time_filter: all, day, hour, month, week, year (default: all)
+        limit: positive int or None (default: 25)
+        post text to submission
+        '''
+        _subreddit = self.reddit.subreddit(subreddit)
+        divider = '-' * 50
+        submissions = self.get_submissions(subreddit, filter_type,
+                                           time_filter, limit)
+        print(divider)
+        for i, submission in enumerate(submissions):
+            text = self.gt.get_meme_text(submission.url)
+            print(f'{i:02}')
+            print(f'{submission.url}')
+            print(text)
+            submission.reply('>' + text)
             print('')
             print(divider)
 
@@ -61,9 +83,14 @@ if __name__ == '__main__':
     time_filter = 'week'
     limit = 25
 
+    subreddit = 'craptionb0t_test'
+    filter_type = 'hot'
+    time_filter = 'all'
+    limit = None
+
     lang = 'joh'
     tess_dir = os.path.dirname(os.path.realpath(__file__))
     tess_dir += 'tessdata'
 
     b = Bot(lang, tess_dir)
-    b.get_all_text(subreddit, filter_type, time_filter, limit)
+    b.post_text(subreddit, filter_type, time_filter, limit)
