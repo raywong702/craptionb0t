@@ -7,7 +7,7 @@ from ocr import OCR
 class GetText(object):
     ''' Get meme text
     '''
-    def __init__(self, lang, tess_dir):
+    def __init__(self, lang=None, tess_dir=None):
         ''' lang: language for tesseract
         tess_dir: tesseract training directory
         initialize an ocr object, language, tesseract directory, and extensions
