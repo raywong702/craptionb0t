@@ -244,13 +244,13 @@ class GetText(object):
             meme_list = self.get_imgflip(img_flip_url)
             meme_type = meme_list[0]
             text = meme_list[1]
-            return text
+            return (text, meme_type)
         elif 'makeameme' in imageUrl:
             makeameme_url = self.transform_makeameme_url(imageUrl)
             meme_list = self.get_makeameme(makeameme_url)
             meme_type = meme_list[0]
             text = meme_list[1]
-            return text
+            return (text, meme_type)
         elif 'livememe' in imageUrl or 'lvme.me' in imageUrl:
             livememe_url = self.transform_livememe_url(imageUrl)
             meme_list = self.get_livememe(livememe_url)
@@ -259,7 +259,7 @@ class GetText(object):
             text = ''
             for i in meme_text:
                 text += i.strip() + '\n'
-            return text
+            return (text, meme_type)
         elif 'memecaptain' in imageUrl:
             memecaptain_url = self.transform_memecaptain_url(imageUrl)
             meme_list = self.get_memecaptain(memecaptain_url)
@@ -268,7 +268,7 @@ class GetText(object):
             text = ''
             for i in meme_text:
                 text += i.strip() + '\n'
-            return text
+            return (text, meme_type)
         elif 'memegen' in imageUrl:
             memegen_url = self.transform_memegen_url(imageUrl)
             meme_list = self.get_memegen(memegen_url)
@@ -276,15 +276,15 @@ class GetText(object):
             text = meme_list[1]
             if text is None and self.is_memegen_direct_url(imageUrl):
                 text = self.process_image(imageUrl)
-            return text
+            return (text, meme_type)
         # imgur webpage. get direct image and run ocr
         elif '//imgur' in imageUrl:
             img = self.get_imgur(imageUrl)
-            return self.process_image(img)
+            return (self.process_image(img), None)
         # direct image urls. primarily imgur and i.redd.it
         elif any(ext in imageUrl for ext in self.EXTENSIONS):
-            return self.process_image(imageUrl)
+            return (self.process_image(imageUrl), None)
         # website urls. need to get text if exists or img to run ocr on
         else:
             # return '*' * 10
-            return None
+            return (None, None)

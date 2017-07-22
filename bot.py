@@ -13,6 +13,8 @@ class Bot(object):
         '''
         self.reddit = praw.Reddit('bot0')
         self.gt = GetText(lang, tess_dir)
+        self.DISCLAIMER = ("^^*These* ^^*craptions* ^^*aren't* ^^*guaranteed* "
+                           "^^*to* ^^*be* ^^*correct.*")
 
     def get_submissions(self, subreddit, filter_type,
                         time_filter=all, limit=25):
@@ -34,7 +36,7 @@ class Bot(object):
         elif filter_type == 'top':
             return _subreddit.top(time_filter, limit=limit)
 
-    def get_all_text(self, subreddit, filter_type, time_filter=all, limit=25):
+    def get_text(self, subreddit, filter_type, time_filter=all, limit=25):
         ''' subreddit: subreddit
         filter_type: hot, new, rising, controversial, top
         time_filter: all, day, hour, month, week, year (default: all)
@@ -47,9 +49,12 @@ class Bot(object):
                                            time_filter, limit)
         print(divider)
         for i, submission in enumerate(submissions):
-            text = self.gt.get_meme_text(submission.url)
+            meme_list = self.gt.get_meme_text(submission.url)
+            text = meme_list[0]
+            meme_type = meme_list[1]
             print(f'{i:02}')
             print(f'{submission.url}')
+            print(meme_type)
             print(text)
             print('')
             print(divider)
@@ -67,13 +72,22 @@ class Bot(object):
                                            time_filter, limit)
         print(divider)
         for i, submission in enumerate(submissions):
-            text = self.gt.get_meme_text(submission.url)
-            print(f'{i:02}')
-            print(f'{submission.url}')
-            print(text)
-            submission.reply('>' + text)
-            print('')
-            print(divider)
+            meme_list = self.gt.get_meme_text(submission.url)
+            text = meme_list[0]
+            meme_type = meme_list[1]
+            if text is not None:
+                if meme_type is not None:
+                    post_text = f'**{meme_type}**\n\n>{text}\n\n'
+                    post_text += f'{self.DISCLAIMER}'
+                else:
+                    post_text = f'>{text}\n\n{self.DISCLAIMER}'
+                print(f'{i:02}')
+                print(f'{submission.url}')
+                print(meme_type)
+                print(text)
+                submission.reply(post_text)
+                print('')
+                print(divider)
 
 
 if __name__ == '__main__':
@@ -95,3 +109,4 @@ if __name__ == '__main__':
 
     b = Bot(lang, tess_dir)
     b.post_text(subreddit, filter_type, time_filter, limit)
+    # b.get_text('adviceanimals', 'top', 'week', 25)
