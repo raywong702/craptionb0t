@@ -3,3 +3,4 @@ __pycache__
 *.txt
 .idea
 reddit_parser.py
+praw.ini
