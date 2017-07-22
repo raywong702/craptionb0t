@@ -94,19 +94,14 @@ if __name__ == '__main__':
     import os
 
     subreddit = 'adviceanimals'
-    filter_type = 'top'
-    time_filter = 'week'
+    filter_type = 'rising'
+    time_filter = 'day'
     limit = 25
-
-    subreddit = 'craptionb0t_test'
-    filter_type = 'hot'
-    time_filter = 'all'
-    limit = None
 
     lang = 'joh'
     tess_dir = os.path.dirname(os.path.realpath(__file__))
     tess_dir += 'tessdata'
 
     b = Bot(lang, tess_dir)
-    b.post_text(subreddit, filter_type, time_filter, limit)
-    # b.get_text('adviceanimals', 'top', 'week', 25)
+    # b.post_text(subreddit, filter_type, time_filter, limit)
+    b.get_text(subreddit, filter_type, time_filter, limit)
