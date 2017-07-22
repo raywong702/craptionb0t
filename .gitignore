@@ -1,6 +1,3 @@
 __pycache__
-*.json
-*.txt
 .idea
 reddit_parser.py
-praw.ini
