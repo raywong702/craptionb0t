@@ -36,6 +36,14 @@ class Bot(object):
         elif filter_type == 'top':
             return _subreddit.top(time_filter, limit=limit)
 
+    def has_commented(self, submission):
+        username = self.reddit.config.username
+        submission.comments.replace_more(limit=None)
+        for top_level_comment in submission.comments:
+            if top_level_comment.author == username:
+                return True
+        return False
+
     def get_text(self, subreddit, filter_type, time_filter=all, limit=25):
         ''' subreddit: subreddit
         filter_type: hot, new, rising, controversial, top
@@ -53,6 +61,7 @@ class Bot(object):
             text = meme_list[0]
             meme_type = meme_list[1]
             print(f'{i:02}')
+            print(f'{submission.shortlink}')
             print(f'{submission.url}')
             print(meme_type)
             print(text)
@@ -72,22 +81,24 @@ class Bot(object):
                                            time_filter, limit)
         print(divider)
         for i, submission in enumerate(submissions):
-            meme_list = self.gt.get_meme_text(submission.url)
-            text = meme_list[0]
-            meme_type = meme_list[1]
-            if text is not None:
-                if meme_type is not None:
-                    post_text = f'**{meme_type}**\n\n>{text}\n\n'
-                    post_text += f'{self.DISCLAIMER}'
-                else:
-                    post_text = f'>{text}\n\n{self.DISCLAIMER}'
-                print(f'{i:02}')
-                print(f'{submission.url}')
-                print(meme_type)
-                print(text)
-                submission.reply(post_text)
-                print('')
-                print(divider)
+            if not self.has_commented(submission):
+                meme_list = self.gt.get_meme_text(submission.url)
+                text = meme_list[0]
+                meme_type = meme_list[1]
+                if text is not None:
+                    if meme_type is not None:
+                        post_text = f'**{meme_type}**\n\n>{text}\n\n'
+                        post_text += f'{self.DISCLAIMER}'
+                    else:
+                        post_text = f'>{text}\n\n{self.DISCLAIMER}'
+                    print(f'{i:02}')
+                    print(f'{submission.shortlink}')
+                    print(f'{submission.url}')
+                    print(meme_type)
+                    print(text)
+                    submission.reply(post_text)
+                    print('')
+                    print(divider)
 
 
 if __name__ == '__main__':
