@@ -37,13 +37,13 @@ class Bot(object):
         elif filter_type == 'top':
             return _subreddit.top(time_filter, limit=limit)
 
-    def has_commented(self, submission):
+    def has_commented(self, submission, comment_limit):
         ''' submission: submission
         return True if already commented on submission
         return False if has not commented on submissionyet
         '''
         username = self.reddit.config.username
-        submission.comments.replace_more(limit=None)
+        submission.comments.replace_more(limit=comment_limit)
         for top_level_comment in submission.comments:
             if top_level_comment.author == username:
                 return True
@@ -78,7 +78,8 @@ class Bot(object):
             text, meme_type = self.gt.get_meme_text(submission.url)
             self.pretty_print(i, submission, text, meme_type)
 
-    def post_text(self, subreddit, filter_type, time_filter=all, limit=25):
+    def post_text(self, subreddit, filter_type, time_filter=all, limit=25,
+                  comment_limit=None):
         ''' subreddit: subreddit
         filter_type: hot, new, rising, controversial, top
         time_filter: all, day, hour, month, week, year (default: all)
@@ -89,7 +90,7 @@ class Bot(object):
                                            time_filter, limit)
 
         for i, submission in enumerate(submissions):
-            if not self.has_commented(submission):
+            if not self.has_commented(submission, comment_limit):
                 text, meme_type = self.gt.get_meme_text(submission.url)
                 if text is not None:
                     if meme_type is not None:
@@ -107,6 +108,11 @@ if __name__ == '__main__':
     subreddit = 'adviceanimals'
     filter_type = 'rising'
     time_filter = 'day'
+
+    subreddit = 'craptionb0t_test'
+    filter_type = 'hot'
+    time_filter = 'day'
+    limit = 25
     limit = 25
 
     bot_name = 'bot0'
@@ -115,5 +121,5 @@ if __name__ == '__main__':
     tess_dir += 'tessdata'
 
     b = Bot(bot_name, lang, tess_dir)
-    # b.post_text(subreddit, filter_type, time_filter, limit)
-    b.get_text(subreddit, filter_type, time_filter, limit)
+    b.post_text(subreddit, filter_type, time_filter, limit)
+    # b.get_text(subreddit, filter_type, time_filter, limit)
