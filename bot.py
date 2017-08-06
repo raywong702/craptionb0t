@@ -7,12 +7,12 @@ class Bot(object):
     ''' Reddit bot to post meme text
     '''
 
-    def __init__(self, lang, tess_dir):
+    def __init__(self, bot_name, lang, tess_dir):
         ''' lang: language for tesseract
         tess_dir: tesseract training directory
         initialize a reddit and get text object
         '''
-        self.reddit = praw.Reddit('bot0')
+        self.reddit = praw.Reddit(bot_name)
         self.gt = GetText(lang, tess_dir)
         self.DISCLAIMER = ("^^*These* ^^*craptions* ^^*aren't* ^^*guaranteed* "
                            "^^*to* ^^*be* ^^*correct.*")
@@ -109,10 +109,11 @@ if __name__ == '__main__':
     time_filter = 'day'
     limit = 25
 
+    bot_name = 'bot0'
     lang = 'joh'
     tess_dir = os.path.dirname(os.path.realpath(__file__))
     tess_dir += 'tessdata'
 
-    b = Bot(lang, tess_dir)
+    b = Bot(bot_name, lang, tess_dir)
     # b.post_text(subreddit, filter_type, time_filter, limit)
     b.get_text(subreddit, filter_type, time_filter, limit)
