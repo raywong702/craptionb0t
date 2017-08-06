@@ -37,6 +37,10 @@ class Bot(object):
             return _subreddit.top(time_filter, limit=limit)
 
     def has_commented(self, submission):
+        ''' submission: submission
+        return True if already commented on submission
+        return False if has not commented on submissionyet
+        '''
         username = self.reddit.config.username
         submission.comments.replace_more(limit=None)
         for top_level_comment in submission.comments:
