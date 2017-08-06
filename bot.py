@@ -40,6 +40,7 @@ class Bot(object):
 
     def has_commented(self, submission, comment_limit):
         ''' submission: submission
+        comment_limit: The ammount of replace_more in comments
         return True if already commented on submission
         return False if has not commented on submissionyet
         '''
@@ -85,6 +86,7 @@ class Bot(object):
         filter_type: hot, new, rising, controversial, top
         time_filter: all, day, hour, month, week, year (default: all)
         limit: positive int or None (default: 25)
+        comment_limit: The ammount of replace_more in comments (default: None)
         post text to submission
         '''
         submissions = self.get_submissions(subreddit, filter_type,
