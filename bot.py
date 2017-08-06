@@ -47,6 +47,21 @@ class Bot(object):
             if top_level_comment.author == username:
                 return True
         return False
+    
+    def pretty_print(self, index, submission, text, meme_type):
+        ''' index: index of enumeration
+        submission: submission
+        meme_type: type of meme
+        text: meme text
+        '''
+        divider = '-' * 50
+        print(divider)
+        print(f'{index:02}')
+        print(f'{submission.shortlink}')
+        print(f'{submission.url}')
+        print(meme_type)
+        print(text)
+        print('')
 
     def get_text(self, subreddit, filter_type, time_filter=all, limit=25):
         ''' subreddit: subreddit
@@ -55,22 +70,12 @@ class Bot(object):
         limit: positive int or None (default: 25)
         print subreddit's meme text
         '''
-        _subreddit = self.reddit.subreddit(subreddit)
-        divider = '-' * 50
         submissions = self.get_submissions(subreddit, filter_type,
                                            time_filter, limit)
-        print(divider)
+
         for i, submission in enumerate(submissions):
-            meme_list = self.gt.get_meme_text(submission.url)
-            text = meme_list[0]
-            meme_type = meme_list[1]
-            print(f'{i:02}')
-            print(f'{submission.shortlink}')
-            print(f'{submission.url}')
-            print(meme_type)
-            print(text)
-            print('')
-            print(divider)
+            text, meme_type = self.gt.get_meme_text(submission.url)
+            self.pretty_print(i, submission, text, meme_type)
 
     def post_text(self, subreddit, filter_type, time_filter=all, limit=25):
         ''' subreddit: subreddit
@@ -79,30 +84,20 @@ class Bot(object):
         limit: positive int or None (default: 25)
         post text to submission
         '''
-        _subreddit = self.reddit.subreddit(subreddit)
-        divider = '-' * 50
         submissions = self.get_submissions(subreddit, filter_type,
                                            time_filter, limit)
-        print(divider)
+
         for i, submission in enumerate(submissions):
             if not self.has_commented(submission):
-                meme_list = self.gt.get_meme_text(submission.url)
-                text = meme_list[0]
-                meme_type = meme_list[1]
+                text, meme_type = self.gt.get_meme_text(submission.url)
                 if text is not None:
                     if meme_type is not None:
                         post_text = f'**{meme_type}**\n\n>{text}\n\n'
                         post_text += f'{self.DISCLAIMER}'
                     else:
                         post_text = f'>{text}\n\n{self.DISCLAIMER}'
-                    print(f'{i:02}')
-                    print(f'{submission.shortlink}')
-                    print(f'{submission.url}')
-                    print(meme_type)
-                    print(text)
                     submission.reply(post_text)
-                    print('')
-                    print(divider)
+                    self.pretty_print(i, submission, text, meme_type)
 
 
 if __name__ == '__main__':
