@@ -8,7 +8,8 @@ class Bot(object):
     '''
 
     def __init__(self, bot_name, lang, tess_dir):
-        ''' lang: language for tesseract
+        ''' bot_name: config to use from praw.ini
+        lang: language for tesseract
         tess_dir: tesseract training directory
         initialize a reddit and get text object
         '''
