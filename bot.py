@@ -108,12 +108,8 @@ if __name__ == '__main__':
     subreddit = 'adviceanimals'
     filter_type = 'rising'
     time_filter = 'day'
-
-    subreddit = 'craptionb0t_test'
-    filter_type = 'hot'
-    time_filter = 'day'
     limit = 25
-    limit = 25
+    comment_limit = None
 
     bot_name = 'bot0'
     lang = 'joh'
@@ -121,5 +117,5 @@ if __name__ == '__main__':
     tess_dir += 'tessdata'
 
     b = Bot(bot_name, lang, tess_dir)
-    b.post_text(subreddit, filter_type, time_filter, limit)
+    b.post_text(subreddit, filter_type, time_filter, limit, comment_limit)
     # b.get_text(subreddit, filter_type, time_filter, limit)
