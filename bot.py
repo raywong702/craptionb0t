@@ -6,6 +6,7 @@ from get_text import GetText
 class Bot(object):
     ''' Reddit bot to post meme text
     '''
+
     def __init__(self, lang, tess_dir):
         ''' lang: language for tesseract
         tess_dir: tesseract training directory
@@ -47,7 +48,7 @@ class Bot(object):
             if top_level_comment.author == username:
                 return True
         return False
-    
+
     def pretty_print(self, index, submission, text, meme_type):
         ''' index: index of enumeration
         submission: submission
