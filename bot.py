@@ -56,6 +56,7 @@ class Bot(object):
         submission: submission
         meme_type: type of meme
         text: meme text
+        prints index, submission shortlink, submission url, meme type and  text
         '''
         divider = '-' * 50
         print(divider)
@@ -66,7 +67,18 @@ class Bot(object):
         print(text)
         print('')
 
-    def get_text(self, subreddit, filter_type, time_filter=all, limit=25):
+    def get_text(self, index, submission):
+        ''' index: index of enumeration
+        submission: submission
+        pretty prints submissions
+        returns (text, meme_type)
+        '''
+        text, meme_type = self.gt.get_meme_text(submission.url)
+        self.pretty_print(index, submission, text, meme_type)
+        return (text, meme_type)
+
+    def get_text_once(self, subreddit, filter_type, time_filter=all,
+                      limit=25):
         ''' subreddit: subreddit
         filter_type: hot, new, rising, controversial, top
         time_filter: all, day, hour, month, week, year (default: all)
@@ -77,32 +89,65 @@ class Bot(object):
                                            time_filter, limit)
 
         for i, submission in enumerate(submissions):
-            text, meme_type = self.gt.get_meme_text(submission.url)
-            self.pretty_print(i, submission, text, meme_type)
+            self.get_text(i, submission)
 
-    def post_text(self, subreddit, filter_type, time_filter=all, limit=25,
-                  comment_limit=None):
+    def get_text_stream(self, subreddit):
+        ''' subreddit: subreddit
+        print subreddit's meme text as new submissions come in
+        '''
+        _subreddit = self.reddit.subreddit(subreddit)
+
+        for i, submission in enumerate(_subreddit.stream.submissions()):
+            self.get_text(i, submission)
+
+    def post_text(self, index, submission, comment_limit=None):
+        ''' index: index of enumeration
+        submission: submission
+        pretty prints text if not commented on already
+        pretty prints already commented if commented on already
+        returns True if posted comment
+        returns False if already commented
+        '''
+        if not self.has_commented(submission, comment_limit):
+            text, meme_type = self.get_text(index, submission)
+            if text is not None:
+                if meme_type is not None:
+                    _post_text = f'**{meme_type}**\n\n>{text}\n\n'
+                    _post_text += f'{self.DISCLAIMER}'
+                else:
+                    _post_text = f'>{text}\n\n{self.DISCLAIMER}'
+                submission.reply(_post_text)
+                return True
+        comment_block = '#' * 5
+        text = f'{comment_block} Already commented {comment_block}'
+        self.pretty_print(index, submission, text, text)
+        return False
+
+    def post_text_once(self, subreddit, filter_type, time_filter=all, limit=25,
+                       comment_limit=None):
         ''' subreddit: subreddit
         filter_type: hot, new, rising, controversial, top
         time_filter: all, day, hour, month, week, year (default: all)
         limit: positive int or None (default: 25)
         comment_limit: The ammount of replace_more in comments (default: None)
-        post text to submission
+        pretty prints text if not commented on already
+        pretty prints already commented if commented on already
+        post text to submissions if not commented on already
         '''
         submissions = self.get_submissions(subreddit, filter_type,
                                            time_filter, limit)
 
         for i, submission in enumerate(submissions):
-            if not self.has_commented(submission, comment_limit):
-                text, meme_type = self.gt.get_meme_text(submission.url)
-                if text is not None:
-                    if meme_type is not None:
-                        post_text = f'**{meme_type}**\n\n>{text}\n\n'
-                        post_text += f'{self.DISCLAIMER}'
-                    else:
-                        post_text = f'>{text}\n\n{self.DISCLAIMER}'
-                    submission.reply(post_text)
-                    self.pretty_print(i, submission, text, meme_type)
+            self.post_text(i, submission, comment_limit)
+
+    def post_text_stream(self, subreddit, comment_limit=None):
+        ''' subreddit: subreddit
+        comment_limit: The ammount of replace_more in comments (default: None)
+        '''
+        _subreddit = self.reddit.subreddit(subreddit)
+
+        for i, submission in enumerate(_subreddit.stream.submissions()):
+            self.post_text(i, submission, comment_limit)
 
 
 if __name__ == '__main__':
@@ -114,11 +159,19 @@ if __name__ == '__main__':
     limit = 25
     comment_limit = None
 
+    subreddit = 'craptionb0t_test'
+    filter_type = 'hot'
+    time_filter = 'day'
+    limit = 25
+    comment_limit = None
+
     bot_name = 'bot0'
     lang = 'joh'
     tess_dir = os.path.dirname(os.path.realpath(__file__))
     tess_dir += 'tessdata'
 
     b = Bot(bot_name, lang, tess_dir)
-    b.post_text(subreddit, filter_type, time_filter, limit, comment_limit)
-    # b.get_text(subreddit, filter_type, time_filter, limit)
+    # b.get_text_once(subreddit, filter_type, time_filter, limit)
+    b.get_text_stream(subreddit)
+    # b.post_text_once(subreddit, filter_type, time_filter, limit, comment_limit)
+    # b.post_text_stream(subreddit, comment_limit)
