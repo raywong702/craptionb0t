@@ -120,7 +120,7 @@ class Bot(object):
                 try:
                     submission.reply(_post_text)
                 except praw.exceptions.APIException as e:
-                    time.sleep(e.sleep_time + 60)
+                    time.sleep(600)
                     submission.reply(_post_text)
                 return True
         comment_block = '#' * 5
