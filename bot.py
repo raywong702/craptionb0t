@@ -130,7 +130,7 @@ class Bot(object):
                     print('-' * 50)
                     print(vars(e))
                     print('-' * 50)
-                    time.sleep(e.sleep_time + 60)
+                    time.sleep(600)
                     submission.reply(_post_text)
                 return True
         comment_block = '#' * 5
