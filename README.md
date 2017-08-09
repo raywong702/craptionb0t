@@ -20,6 +20,11 @@ brew install python3
 pip install -r requirements.txt
 ```
 
+## References
+[Stackoverflow Tesseract
+Lambda](https://stackoverflow.com/questions/33588262/tesseract-ocr-on-aws-lambda-via-virtualenv)
+
+
 ## Credits
 Project: meme-ocr https://github.com/johnlinp/meme-ocr
 
