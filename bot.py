@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import time
 import praw
 from get_text import GetText
 
@@ -59,8 +60,11 @@ class Bot(object):
         prints index, submission shortlink, submission url, meme type and  text
         '''
         divider = '-' * 50
+        now = time.strftime("%Y/%m/%d %H:%M:%S")
         print(divider)
+        print('')
         print(f'{index:02}')
+        print(now)
         print(f'{submission.shortlink}')
         print(f'{submission.url}')
         print(meme_type)
@@ -116,7 +120,18 @@ class Bot(object):
                     _post_text += f'{self.DISCLAIMER}'
                 else:
                     _post_text = f'>{text}\n\n{self.DISCLAIMER}'
-                submission.reply(_post_text)
+                try:
+                    submission.reply(_post_text)
+                except praw.exceptions.APIException as e:
+                    print('-' * 50)
+                    print(e)
+                    print('-' * 50)
+                    print(dir(e))
+                    print('-' * 50)
+                    print(vars(e))
+                    print('-' * 50)
+                    time.sleep(e.sleep_time + 60)
+                    submission.reply(_post_text)
                 return True
         comment_block = '#' * 5
         text = f'{comment_block} Already commented {comment_block}'
@@ -155,13 +170,9 @@ if __name__ == '__main__':
 
     subreddit = 'adviceanimals'
     filter_type = 'rising'
+    filter_type = 'top'
     time_filter = 'day'
-    limit = 25
-    comment_limit = None
-
-    subreddit = 'craptionb0t_test'
-    filter_type = 'hot'
-    time_filter = 'day'
+    time_filter = 'hour'
     limit = 25
     comment_limit = None
 
@@ -172,6 +183,6 @@ if __name__ == '__main__':
 
     b = Bot(bot_name, lang, tess_dir)
     # b.get_text_once(subreddit, filter_type, time_filter, limit)
-    b.get_text_stream(subreddit)
+    # b.get_text_stream(subreddit)
     # b.post_text_once(subreddit, filter_type, time_filter, limit, comment_limit)
-    # b.post_text_stream(subreddit, comment_limit)
+    b.post_text_stream(subreddit, comment_limit)
