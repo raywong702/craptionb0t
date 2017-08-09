@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import time
 import praw
 from get_text import GetText
 
@@ -116,7 +117,11 @@ class Bot(object):
                     _post_text += f'{self.DISCLAIMER}'
                 else:
                     _post_text = f'>{text}\n\n{self.DISCLAIMER}'
-                submission.reply(_post_text)
+                try:
+                    submission.reply(_post_text)
+                except praw.exceptions.APIException as e:
+                    time.sleep(e.sleep_time + 60)
+                    submission.reply(_post_text)
                 return True
         comment_block = '#' * 5
         text = f'{comment_block} Already commented {comment_block}'
