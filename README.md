@@ -1,5 +1,10 @@
 # craptionb0t
 
+## Startup
+```
+nohup python -u ./bot.py &
+```
+
 ## Requirements
 #### Requires tesseract
 See [tesseract wiki](https://github.com/tesseract-ocr/tesseract/wiki)
