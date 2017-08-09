@@ -173,26 +173,29 @@ class OCR(object):
         converts image to black and white
         returns text of image
         '''
-        width, height = image.size
-        for x in range(width):
-            for y in range(height):
-                pixel = image.getpixel((x, y))
-                if pixel >= (240, 240, 240):
-                    image.putpixel((x, y), (255, 255, 255))
-                else:
-                    image.putpixel((x, y), (0, 0, 0))
+        try:
+            width, height = image.size
+            for x in range(width):
+                for y in range(height):
+                    pixel = image.getpixel((x, y))
+                    if pixel >= (240, 240, 240):
+                        image.putpixel((x, y), (255, 255, 255))
+                    else:
+                        image.putpixel((x, y), (0, 0, 0))
 
-        if type(lang) is str and type(tess_dir) is str:
-            tess_dir = '--tessdata-dir "{}"'.format(tess_dir)
-            result = pytesseract.image_to_string(image, lang=lang,
-                                                 config=tess_dir)
-        elif type(lang) is str and type(tess_dir) is None:
-            result = pytesseract.image_to_string(image, lang=lang)
-        elif type(lang) is None and type(tess_dir) is str:
-            result = pytesseract.image_to_string(image, config=tess_dir)
-        else:
-            result = pytesseract.image_to_string(image)
-        return result
+            if type(lang) is str and type(tess_dir) is str:
+                tess_dir = '--tessdata-dir "{}"'.format(tess_dir)
+                result = pytesseract.image_to_string(image, lang=lang,
+                                                    config=tess_dir)
+            elif type(lang) is str and type(tess_dir) is None:
+                result = pytesseract.image_to_string(image, lang=lang)
+            elif type(lang) is None and type(tess_dir) is str:
+                result = pytesseract.image_to_string(image, config=tess_dir)
+            else:
+                result = pytesseract.image_to_string(image)
+            return result
+        except:
+            return None
 
     def print(self, url, lang=None, tess_dir=None):
         ''' url: url of image
