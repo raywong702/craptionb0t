@@ -158,6 +158,7 @@ class Bot(object):
     def post_text_stream(self, subreddit, comment_limit=None):
         ''' subreddit: subreddit
         comment_limit: The ammount of replace_more in comments (default: None)
+        note: takes about 5 upvotes for rate limit to disipate
         '''
         _subreddit = self.reddit.subreddit(subreddit)
 
