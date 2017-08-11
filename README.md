@@ -1,5 +1,7 @@
 # craptionb0t
 
+Bot to comment a post's meme's text
+
 ## Startup
 ```
 nohup python -u ./bot.py &
